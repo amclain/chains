@@ -1,0 +1,163 @@
+(***********************************************************
+    Example of how the NetLinx Preparser syntax should
+    look.
+    
+    File extension = .axs.chains
+************************************************************)
+
+PROGRAM_NAME 'NetLinx Preparser'
+(***********************************************************)
+(* System Type : NetLinx                                   *)
+(***********************************************************)
+(*           DEVICE NUMBER DEFINITIONS GO BELOW            *)
+(***********************************************************)
+DEFINE_DEVICE
+
+// Single device.
+dvTP		33000:1:0
+
+
+// Device combine.
+vdvTP		34000:1:0
+    dvTP1	10001:1:0
+    dvTP2	10002:1:0
+
+(***********************************************************)
+(*              CONSTANT DEFINITIONS GO BELOW              *)
+(***********************************************************)
+DEFINE_CONSTANT
+
+MY_CONSTANT_INTEGER	1
+MY_CONSTANT_STRING	'a string'
+
+MY_CONSTANT_COMPOSITION	"#[var type]{MY_CONSTANT_STRING} plus another string"
+
+(***********************************************************)
+(*                    INCLUDES GO BELOW                    *)
+(***********************************************************)
+
+include 'amx-lib-log'
+
+(***********************************************************)
+(*              DATA TYPE DEFINITIONS GO BELOW             *)
+(***********************************************************)
+DEFINE_TYPE
+
+// Is there a way to remove variable type?
+volume:
+    ui	lvl
+    ch	mute
+    ui	max
+    ui	min
+    ui	step
+    ch	dim
+    ui	dimAmount
+
+(***********************************************************)
+(*              VARIABLE DEFINITIONS GO BELOW              *)
+(***********************************************************)
+DEFINE_VARIABLE
+
+ui myVar = 123
+
+// Variable types:
+ui	unsigned int
+si	signed int
+ul	unsigned long
+sl	signed long
+ch	character
+wc	wide character
+st	string (char[255])
+st[#]	string (char[#])
+[named]	user-defined type
+
+(***********************************************************)
+(*         SUBROUTINE/FUNCTION DEFINITIONS GO BELOW        *)
+(***********************************************************)
+
+volumeUp (chan) ->
+    doStuff chan
+
+(***********************************************************)
+(*                 STARTUP CODE GOES BELOW                 *)
+(***********************************************************)
+DEFINE_START
+
+(***********************************************************)
+(*                   THE EVENTS GO BELOW                   *)
+(***********************************************************)
+DEFINE_EVENT
+
+data => vdvTP
+    string ->
+	doStuff
+	
+    online ->
+
+// How to handle multiple channels / dev-chans.
+// List kind of like an array?
+
+button => vdvTP, CHANNEL_NUMBER
+    push ->
+	doStuff
+	
+    release ->
+	doStuff
+	
+
+button =>
+	vdvTP, CHANNEL_NUMBER_1
+	vdvTP, CHANNEL_NUMBER_2
+	DEV-CHAN
+
+	push ->
+		doStuff
+
+	release ->
+		doStuff
+
+
+(***********************************************************)
+(*                 THE MAINLINE GOES BELOW                 *)
+(***********************************************************)
+DEFINE_PROGRAM
+
+// Comments: //, /* */, #
+
+// Arrays:
+	[1..5]		// [1, 2, 3, 4, 5]
+	[1...5]		// [1, 2, 3, 4]
+
+// Loops:
+	for i in items
+		doStuff i
+
+	for i in [1..5]
+		doStuff i
+
+// Ternary:
+	a = i > 3 ? x : y
+
+// Switch, Case
+	switch i
+		case 1
+			doStuff
+		case 2
+			doStuff
+
+		case 3: doStuff
+		case 4: doStuff
+
+// Case, When
+
+case i
+	when 1
+		doStuff
+	when 2
+	when x
+
+	
+(***********************************************************)
+(*                     END OF PROGRAM                      *)
+(*          DO NOT PUT ANY CODE BELOW THIS COMMENT         *)
+(***********************************************************)
