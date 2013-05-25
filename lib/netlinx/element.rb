@@ -19,6 +19,7 @@ module NetLinx
       
       @elements.each do |e|
         e.to_s.each_line {|line| out += "\t#{line}"}
+        out += "\n" unless e == @elements.last
       end
       
       out
