@@ -1,5 +1,5 @@
 require 'test_helper'
-require "#{$lib}/netlinx/element/device"
+require "#{$lib}/netlinx/device"
 
 class TestDevice < Test::Unit::TestCase
   

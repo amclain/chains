@@ -1,5 +1,5 @@
 require 'test_helper'
-require "#{$lib}/netlinx/element/include"
+require "#{$lib}/netlinx/include"
 
 class TestInclude < Test::Unit::TestCase
   

@@ -1,7 +1,7 @@
 require 'test_helper'
 require "#{$lib}/netlinx/document"
 require "#{$lib}/netlinx/section"
-require "#{$lib}/netlinx/element/device"
+require "#{$lib}/netlinx/device"
 
 class TestSection < Test::Unit::TestCase
   
