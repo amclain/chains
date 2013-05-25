@@ -1,7 +1,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class Section
+  class Section < Element
     # Devices
     # Constants
     # Includes
@@ -13,16 +13,8 @@ module NetLinx
     # Program
     
     def initialize(name = nil)
+      super()
       @name = name
-      @elements = Array.new
-    end
-    
-    def <<(e)
-      add_element e
-    end
-    
-    def add_element(e)
-      @elements.push e if e.is_a? NetLinx::Element
     end
     
     def to_s

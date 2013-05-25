@@ -24,6 +24,13 @@ push << NetLinx::Ternary.new('x > 5', 3, 17, 'i')
 
 
 f = NetLinx::Function.new 'my_function', 'integer index', 'sinteger'
+f.add_variable :integer, :i
+f.add_variable :integer, :j
+f.add_variable :integer, 'dspValue'
+f.add_variable :sinteger, :returnValue
+f.add_variable :long, :fader1
+f.add_variable :long, :fader2
+
 doc[:functions] << f
 
 
