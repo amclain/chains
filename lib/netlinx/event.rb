@@ -11,21 +11,16 @@ module NetLinx
       @devchan = Array.new
     end
     
+    def +(device, channel = nil)
+      add_device device, channel
+    end
+    
     def add_device(device, channel = nil)
       # Device = device or devchan
       @devchan.push [device, channel]
     end
     
     def to_s
-      # button_event[dvTP, CH_1]
-      # button_event[dvTP, CH_2]
-      # {
-      #   push:
-      #   {
-      #     doStuff();
-      #   }
-      # }
-      
       out = ''
       
       return out unless @event

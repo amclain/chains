@@ -61,8 +61,8 @@ BTN_LIGHTING_SCENE_1	= 30;
 
 
 Code Block:
-Symbol, expression, or complex on first line.
-Opening and closing parenthesis wrap children.
+Symbol, expression, or compound group on first line.
+Opening and closing curly braces wrap children.
 
 push:
 {
