@@ -1,4 +1,4 @@
-require "#{@libPath}/netlinx/section"
+require "#{@lib}/netlinx/section"
 
 module NetLinx
   class Document

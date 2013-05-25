@@ -1,5 +1,5 @@
-require "#{@libPath}/netlinx/element"
-require "#{@libPath}/netlinx/element/event_handler"
+require "#{@lib}/netlinx/element"
+require "#{@lib}/netlinx/element/event_handler"
 
 module NetLinx
   class Event < NetLinx::Element

@@ -1,11 +1,11 @@
-@libPath = "#{File.dirname(__FILE__)}/include"
-puts @libPath
+@lib = "#{File.dirname(__FILE__)}/lib"
+puts @lib
 
 require 'pry'
-require "#{@libPath}/netlinx/document"
-require "#{@libPath}/netlinx/element/event"
-require "#{@libPath}/netlinx/element/function"
-require "#{@libPath}/netlinx/element/ternary"
+require "#{@lib}/netlinx/document"
+require "#{@lib}/netlinx/element/event"
+require "#{@lib}/netlinx/element/function"
+require "#{@lib}/netlinx/element/ternary"
 
 doc = NetLinx::Document.new
 

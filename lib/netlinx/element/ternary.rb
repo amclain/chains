@@ -1,5 +1,5 @@
-require "#{@libPath}/netlinx/element"
-require "#{@libPath}/netlinx/element/verbatim"
+require "#{@lib}/netlinx/element"
+require "#{@lib}/netlinx/element/verbatim"
 
 module NetLinx
   class Ternary < Element
