@@ -6,6 +6,7 @@ require "#{$lib}/netlinx/document"
 require "#{$lib}/netlinx/element/device"
 require "#{$lib}/netlinx/element/event"
 require "#{$lib}/netlinx/element/function"
+require "#{$lib}/netlinx/element/include"
 require "#{$lib}/netlinx/element/ternary"
 
 doc = NetLinx::Document.new 'Test Program'
@@ -34,6 +35,8 @@ f.add_element NetLinx::Ternary.new('x', 1, 0, 'i')
 
 dps = NetLinx::Device.new :dvTP, '10001:1:0'
 doc.add_element dps, :devices
+
+doc.add_element NetLinx::Include.new('amx-lib-volume'), :includes
 
 
 puts doc

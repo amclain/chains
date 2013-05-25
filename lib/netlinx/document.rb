@@ -51,6 +51,10 @@ EOS
         out += "(***********************************************************)\n"
         out += "(*  #{name.to_s.upcase.ljust 55}*)\n"
         out += "(***********************************************************)\n"
+        
+        # Add an extra space to sections that don't start with a DEFINE_ symbol.
+        out += "\n" if [:includes, :functions].include? name
+        
         out += section.to_s
       end
       
