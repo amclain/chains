@@ -6,6 +6,7 @@ require "#{$lib}/netlinx/document"
 require "#{$lib}/netlinx/assignment"
 require "#{$lib}/netlinx/block"
 require "#{$lib}/netlinx/event"
+require "#{$lib}/netlinx/event_handler"
 require "#{$lib}/netlinx/statement"
 
 
@@ -39,6 +40,11 @@ doc[:events] << e
 e.add_device 'dvTP', 'BTN_1'
 e.add_device 'dvTP2', 'BTN_1'
 
-e << NetLinx::Block.new('push:')
+push2 = NetLinx::EventHandler.new(:push)
+e << push2
+
+# binding.pry
+# push2.definitions.push NetLinx::Statement.new('integer i')
+
 
 puts doc

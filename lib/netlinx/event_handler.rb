@@ -1,42 +1,22 @@
-require "#{$lib}/netlinx/element"
+require "#{$lib}/netlinx/block"
 
 module NetLinx
-  class EventHandler < NetLinx::Element
+  class EventHandler < NetLinx::Block
     
-    def initialize(handler = nil)
-      super()
+    def initialize(handler)
+      super ''
       
       # Handlers: push, release, on, off, etc.
       @handler = handler
-      @variables = Hash.new
     end
     
-    def add_variable(type, name)
-      @variables[type] = Array.new unless @variables[type]
-      @variables[type].push name
+    def empty?
+      @handler.nil? || handler.to_s.empty?
     end
     
     def to_s
-      out = ''
-      
-      return out unless @handler
-      
-      out += "#{@handler}:\n"
-      out += "{\n"
-      
-      # Print variables.
-      @variables.each do |type, names|
-        out += "\t#{type.to_s.downcase} #{names.join ', '}\n"
-      end
-      
-      out += "\n" unless @variables.empty?
-      
-      # Print children.
-      @elements.each do |e|
-        e.to_s.each_line {|line| out += "\t#{line}"}
-      end
-      
-      out += "}\n"
+      @compound = @handler.to_s.delete(':') + ':'
+      super
     end
     
   end
