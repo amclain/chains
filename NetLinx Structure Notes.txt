@@ -1,0 +1,161 @@
+THE FOLLOWING ARE OBSERVATIONS OF NETLINX SYNTAX PATTERNS
+
+
+Header:
+Two comment lines with info in between.
+
+(***********************************************************
+    
+************************************************************)
+
+
+Comment Header:
+Two closed comment lines with an enclosed comment in between.
+
+(***********************************************************)
+(*           DEVICE NUMBER DEFINITIONS GO BELOW            *)
+(***********************************************************)
+
+
+Block Comment:
+Open and close tags with text in between.
+/*
+    Stuff
+*/
+
+
+Comment:
+Single tag followed by text.
+// Stuff
+
+
+Section:
+Section label with children underneath on same indentation.
+
+DEFINE_CONSTANT
+
+
+Precompiler Directive:
+Directive name followed by a value.
+Separated with space, starting with a #.
+
+#include 'camera'
+
+
+Statement:
+A line of executible code.
+Ends with a semicolon.
+
+send_command dvTP_Main, 'adbeep';
+doStuff();
+
+
+Assignment:
+Symbol with an optional type at the beginning, followed by a value.
+Separated by an equals sign and terminated with a colon.
+A type of statement.
+
+integer dspPreset	= false;
+dvTP_Main		= 10001:1:0;
+BTN_LIGHTING_SCENE_1	= 30;
+
+
+Code Block:
+Symbol, expression, or complex on first line.
+Opening and closing parenthesis wrap children.
+
+push:
+{
+    doStuff();
+}
+
+define_function integer add(integer a, integer b)
+{
+}
+
+if (i > 0)
+{
+}
+
+wait 3
+{
+}
+
+
+Code blocks can have two relations: Children and siblings.
+Siblings are a separate block, but with no space between
+the curly braces.
+
+    if (i > 0)
+    {
+	doStuff(i);   <- CHILD of If
+    }
+    else              <- SIBLING of If
+    {
+	doNothing();  <- CHILD of Else
+    }
+
+
+
+Code Block -> Function, Event Handler:
+
+Functions are a type of code block with a:
+    - 'define_function' starting tag
+    - optional return value
+    - function name
+    - type/value array of sibling input parameters
+    
+    - variable declarations at start of children
+    - initializers after varaible declarations
+    - statements (stuff to execute) after initializers
+    - optional return value for functions with a return type
+    
+    - no sibling functions
+    - no child functions
+
+define_function integer add(integer a, integer b)
+{
+    // Variables
+    integer i;
+    
+    // Initializers
+    i = 0;
+    
+    // Statements
+    if (i > 0)...
+    doStuff(i);
+    
+    // Return
+    return i;
+}
+
+
+No return value for event handlers.
+
+push:
+{
+    doStuff();
+    
+    // No return value
+}
+
+
+Code Block -> Conditionals:
+Symbol followed by an expression in parenthesis
+Symbol and expression separated by whitespace.
+Has children.
+May have siblings.
+
+if (x > 0)
+{
+    doStuff();
+}
+else if (x == 5)
+{
+    doOtherStuff();
+}
+else
+{
+    doNothing();
+}
+
