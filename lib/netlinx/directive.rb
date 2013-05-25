@@ -9,7 +9,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class Directive < Element
+  class Directive < NetLinx::Element
     
     def initialize(directive, value = nil)
       super()

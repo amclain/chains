@@ -25,7 +25,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class Block < Element
+  class Block < NetLinx::Element
     def initialize(compound)
       super()
       @compound = compound

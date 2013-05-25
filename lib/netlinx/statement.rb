@@ -10,7 +10,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class Statement < Element
+  class Statement < NetLinx::Element
     def initialize(statement)
       super()
       @statement = text

@@ -1,7 +1,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class EventHandler < Element
+  class EventHandler < NetLinx::Element
     
     def initialize(handler = nil)
       super()

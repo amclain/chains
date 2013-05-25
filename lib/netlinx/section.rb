@@ -1,7 +1,7 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  class Section < Element
+  class Section < NetLinx::Element
     # Devices
     # Constants
     # Includes

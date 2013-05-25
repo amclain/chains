@@ -12,7 +12,7 @@
 require "#{$lib}/netlinx/statement"
 
 module NetLinx
-  class Assignment < Statement
+  class Assignment < NetLinx::Statement
     def initialize(symbol, value, type = nil)
       super()
       @symbol = symbol
