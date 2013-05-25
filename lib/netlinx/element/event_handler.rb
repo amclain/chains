@@ -1,4 +1,4 @@
-require "#{@lib}/netlinx/element"
+require "#{$lib}/netlinx/element"
 
 module NetLinx
   class EventHandler < Element

@@ -1,11 +1,11 @@
-@lib = "#{File.dirname(__FILE__)}/lib"
-puts @lib
+$root = File.dirname(__FILE__)
+$lib = "#{$root}/lib"
 
 require 'pry'
-require "#{@lib}/netlinx/document"
-require "#{@lib}/netlinx/element/event"
-require "#{@lib}/netlinx/element/function"
-require "#{@lib}/netlinx/element/ternary"
+require "#{$lib}/netlinx/document"
+require "#{$lib}/netlinx/element/event"
+require "#{$lib}/netlinx/element/function"
+require "#{$lib}/netlinx/element/ternary"
 
 doc = NetLinx::Document.new
 
