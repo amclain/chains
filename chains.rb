@@ -5,6 +5,7 @@ require 'pry'
 require "#{$lib}/netlinx/document"
 require "#{$lib}/netlinx/assignment"
 require "#{$lib}/netlinx/block"
+require "#{$lib}/netlinx/event"
 require "#{$lib}/netlinx/statement"
 
 
@@ -29,5 +30,15 @@ cIf ^ cElse
 
 release = NetLinx::Block.new('release:')
 event << release
+
+
+# New event
+e = NetLinx::Event.new :button
+doc[:events] << e
+
+e.add_device 'dvTP', 'BTN_1'
+e.add_device 'dvTP2', 'BTN_1'
+
+e << NetLinx::Block.new('push:')
 
 puts doc

@@ -25,10 +25,12 @@ module NetLinx
     
     def <<(e)
       add_child e
+      self
     end
     
     def ^(e)
       add_sibling e
+      self
     end
     
     def add_child(e)

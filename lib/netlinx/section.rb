@@ -1,4 +1,5 @@
 require "#{$lib}/netlinx/element"
+require "#{$lib}/netlinx/block"
 
 module NetLinx
   class Section < NetLinx::Element
@@ -23,7 +24,13 @@ module NetLinx
       out += "DEFINE_#{@name.upcase}\n\n" if @name
       
       @children.each do |e|
+        if e.is_a?(NetLinx::Block) && e.empty?
+          out.chop!
+          next
+        end
+        
         out += e.to_s
+        out += "\n" unless e == @children.last || !e.is_a?(NetLinx::Block) 
       end
       
       out += "\n"

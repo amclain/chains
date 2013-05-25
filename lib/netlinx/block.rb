@@ -59,6 +59,10 @@ module NetLinx
       @final = Array.new
     end
     
+    def empty?
+      @compound == nil || @compound.strip.empty? ? true : false
+    end
+    
     def to_s
       out = "#{@compound.to_s}\n"
       out += "{\n"

@@ -1,18 +1,24 @@
-require "#{$lib}/netlinx/element"
-require "#{$lib}/netlinx/element/event_handler"
+require "#{$lib}/netlinx/block"
 
 module NetLinx
-  class Event < NetLinx::Element
+  class Event < NetLinx::Block
+    attr_reader :event
     
     def initialize(event = nil)
-      super()
+      super ''
       
-      @event = event
+      # Event type.
+      @event = event.to_s
       @devchan = Array.new
+    end
+    
+    def empty?
+      @devchan.empty?
     end
     
     def +(device, channel = nil)
       add_device device, channel
+      self
     end
     
     def add_device(device, channel = nil)
@@ -21,34 +27,15 @@ module NetLinx
     end
     
     def to_s
-      out = ''
-      
-      return out unless @event
-      return out if @devchan.empty?
-      
+      @compound = ''
       @devchan.each do |devchan|
-        out += "#{@event}_event"
-        
-        if devchan[1]
-          # Device + Channel
-          out += "[#{devchan[0]}, #{devchan[1]}]\n"
-        else
-          # Devchan
-          out += "[#{devchan[0]}]\n"
-        end
+        @compound += "#{@event.downcase}_event[#{devchan[0]}"
+        @compound += ", #{devchan[1]}"
+        @compound += "]"
+        @compound += "\n" unless devchan == @devchan.last
       end
       
-      out += "{\n"
-      
-      @elements.each do |e|
-        e.to_s.each_line {|line| out += "\t#{line}"}
-        out += "\n" unless e == @elements.last
-      end
-      
-      # binding.pry
-      # out += children_to_s
-      
-      out += "}\n"
+      super()
     end
     
   end
