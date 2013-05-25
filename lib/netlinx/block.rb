@@ -63,6 +63,18 @@ module NetLinx
       @compound == nil || @compound.strip.empty? ? true : false
     end
     
+    def add_definition(e)
+      @definitions.push e
+    end
+    
+    def add_initial(e)
+      @initial.push e
+    end
+    
+    def add_final(e)
+      @final.push e
+    end
+    
     def to_s
       out = "#{@compound.to_s}\n"
       out += "{\n"
@@ -79,6 +91,9 @@ module NetLinx
       
       @children.each do |child|
         child.to_s.each_line {|line| out += "\t#{line}"}
+        
+        # Add a space between event handlers.
+        out += "\n" if child.is_a?(EventHandler) && child != @children.last
       end
       out += "\n" if !@children.empty? && !@final.empty?
       

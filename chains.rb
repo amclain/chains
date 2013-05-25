@@ -43,8 +43,9 @@ e.add_device 'dvTP2', 'BTN_1'
 push2 = NetLinx::EventHandler.new(:push)
 e << push2
 
-# binding.pry
-# push2.definitions.push NetLinx::Statement.new('integer i')
+push2.add_definition NetLinx::Statement.new('integer i')
+push2.add_initial NetLinx::Assignment.new(:i, 0)
 
+e << NetLinx::EventHandler.new(:release)
 
 puts doc
