@@ -20,12 +20,6 @@ module NetLinx
       }
     end
     
-    def add_element(e, section)
-      return unless e.is_a? NetLinx::Element
-      s = @sections[section]
-      s.add_element(e) if s
-    end
-    
     def [](section)
       @sections[section]
     end
