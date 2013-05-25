@@ -46,7 +46,7 @@ class TestDevice < Test::Unit::TestCase
   end
   
   def test_device_symbol
-    d = NetLinx::Device.new :dvTP, '10001, 1, 0'
+    d = NetLinx::Device.new :dvTP, '10001:1:0'
     string = d.to_s
     
     split = string.split '='
