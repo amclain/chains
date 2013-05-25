@@ -16,24 +16,7 @@ doc[:devices] << NetLinx::Assignment.new(:dvTP, '10001:1:0')
 
 doc[:variables] << NetLinx::Assignment.new(:activePreset, 1, :integer)
 
-event = NetLinx::Block.new('button_event[dvTP, CHAN_1]')
-doc[:events] << event
-
-push = NetLinx::Block.new('push:')
-event << push
-
-cIf = NetLinx::Block.new('if (x > 5)')
-cIf << NetLinx::Statement.new('doStuff()')
-push << cIf
-cElse = NetLinx::Block.new('else')
-cElse << NetLinx::Statement.new('doNothing()')
-cIf ^ cElse
-
-release = NetLinx::Block.new('release:')
-event << release
-
-
-# New event
+# Event
 e = NetLinx::Event.new :button
 doc[:events] << e
 
