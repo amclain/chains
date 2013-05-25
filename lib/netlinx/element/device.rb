@@ -13,9 +13,9 @@ module NetLinx
       @system = system.to_i
       
       
-      dps = device.split ':'
+      dps = (device.is_a? String) ? device.split(':') : Array.new 
       
-      if dps.count == 3
+      if dps.count > 0
         # DPS address was specified.
         @device = dps[0]
         @port = dps[1]
