@@ -22,7 +22,7 @@ module NetLinx
       
       out += "DEFINE_#{@name.upcase}\n\n" if @name
       
-      @elements.each do |e|
+      @children.each do |e|
         out += e.to_s
       end
       

@@ -13,7 +13,7 @@ module NetLinx
   class Statement < NetLinx::Element
     def initialize(statement)
       super()
-      @statement = text
+      @statement = statement
     end
     
     def to_s

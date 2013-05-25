@@ -1,12 +1,10 @@
-require "#{$lib}/netlinx/element"
+require "#{$lib}/netlinx/assignment"
 
 module NetLinx
-  class Device < NetLinx::Element
+  class Device < NetLinx::Assignment
     
     # device = DPS or device number.
     def initialize(name, device, port = nil, system = nil)
-      super()
-      
       @name = name
       @device = device.to_i
       @port = port.to_i
@@ -21,14 +19,8 @@ module NetLinx
         @port = dps[1]
         @system = dps[2]
       end
-    end
-    
-    # Override to do nothing.
-    def add_element(e)
-    end
-    
-    def to_s
-      "#{@name.to_s.ljust 32} = #{@device}:#{@port}:#{@system};\n"
+      
+      super @name, "#{@device}:#{@port}:#{@system}"
     end
     
   end

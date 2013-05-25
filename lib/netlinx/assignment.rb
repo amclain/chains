@@ -14,7 +14,8 @@ require "#{$lib}/netlinx/statement"
 module NetLinx
   class Assignment < NetLinx::Statement
     def initialize(symbol, value, type = nil)
-      super()
+      super ''
+      
       @symbol = symbol
       @value = value
       @type = type
@@ -22,7 +23,7 @@ module NetLinx
       
       @statement  = ''
       @statement += "#{@type.to_s} " if type
-      @statement += "#{@symbol.to_s.ljust 24} = #{@value.to_s};\n"
+      @statement += "#{@symbol.to_s.ljust 24} = #{@value.to_s}"
     end
   end
 end

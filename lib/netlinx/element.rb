@@ -15,7 +15,8 @@
 
 module NetLinx
   class Element
-    attr_accessor :elements
+    attr_accessor :children
+    attr_accessor :siblings
     
     def initialize
       @children = Array.new

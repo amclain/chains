@@ -44,6 +44,8 @@ module NetLinx
       @siblings.each do |sibling|
         out += sibling.to_s
       end
+      
+      out
     end
   end
 end
