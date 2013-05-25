@@ -3,6 +3,7 @@ $lib = "#{$root}/lib"
 
 require 'pry'
 require "#{$lib}/netlinx/document"
+require "#{$lib}/netlinx/element/device"
 require "#{$lib}/netlinx/element/event"
 require "#{$lib}/netlinx/element/function"
 require "#{$lib}/netlinx/element/ternary"
@@ -29,6 +30,10 @@ doc.add_element f, :functions
 
 
 f.add_element NetLinx::Ternary.new('x', 1, 0, 'i')
+
+
+dps = NetLinx::Device.new :dvTP, '10001:1:0'
+doc.add_element dps, :devices
 
 
 puts doc
