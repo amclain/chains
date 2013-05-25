@@ -27,4 +27,7 @@ cElse = NetLinx::Block.new('else')
 cElse << NetLinx::Statement.new('doNothing()')
 cIf ^ cElse
 
+release = NetLinx::Block.new('release:')
+event << release
+
 puts doc
