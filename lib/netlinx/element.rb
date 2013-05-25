@@ -6,6 +6,10 @@ module NetLinx
       @elements = Array.new
     end
     
+    def <<(e)
+      add_element e
+    end
+    
     def add_element(e)
       @elements.push e if e.is_a? Element
     end

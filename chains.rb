@@ -12,31 +12,28 @@ require "#{$lib}/netlinx/element/ternary"
 doc = NetLinx::Document.new 'Test Program'
 
 e = NetLinx::Event.new :button
-#events.add_element e
-doc.add_element e, :events
+doc[:events] << e
 
 e.add_device 'dvTP', 'CHAN_1'
 e.add_device 'dvTP', 'CHAN_2'
 
 push = NetLinx::EventHandler.new :push
- 
-e.add_element push 
+e << push 
 
-push.add_element NetLinx::Ternary.new('x > 5', 3, 17, 'i')
-
-
-f = NetLinx::Function.new('my_function', 'integer index', 'sinteger')
-#functions.add_element f
-doc.add_element f, :functions
+push << NetLinx::Ternary.new('x > 5', 3, 17, 'i')
 
 
-f.add_element NetLinx::Ternary.new('x', 1, 0, 'i')
+f = NetLinx::Function.new 'my_function', 'integer index', 'sinteger'
+doc[:functions] << f
+
+
+f << NetLinx::Ternary.new('x', 1, 0, 'i')
 
 
 dps = NetLinx::Device.new :dvTP, '10001:1:0'
-doc.add_element dps, :devices
+doc[:devices] << dps
 
-doc.add_element NetLinx::Include.new('amx-lib-volume'), :includes
+doc[:includes] << NetLinx::Include.new('amx-lib-volume')
 
 
 puts doc
