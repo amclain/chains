@@ -1,49 +1,42 @@
 (***********************************************************
-    Example of how the NetLinx Preparser syntax should
-    look.
+    Example of how the Chains syntax should look.
     
     File extension = .axs.chains
 ************************************************************)
 
-PROGRAM_NAME 'NetLinx Preparser'
+PROGRAM_NAME='NetLinx Preparser'
 (***********************************************************)
-(* System Type : NetLinx                                   *)
+(*                        DEVICES                          *)
 (***********************************************************)
-(*           DEVICE NUMBER DEFINITIONS GO BELOW            *)
-(***********************************************************)
-DEFINE_DEVICE
 
 // Single device.
-dvTP		33000:1:0
+dvTP        = 33000:1:0
 
 
 // Device combine.
-vdvTP		34000:1:0
-    dvTP1	10001:1:0
-    dvTP2	10002:1:0
+vdvTP       = 34000:1:0
+    dvTP1   = 10001:1:0
+    dvTP2   = 10002:1:0
 
 (***********************************************************)
-(*              CONSTANT DEFINITIONS GO BELOW              *)
-(***********************************************************)
-DEFINE_CONSTANT
-
-MY_CONSTANT_INTEGER	1
-MY_CONSTANT_STRING	'a string'
-
-MY_CONSTANT_COMPOSITION	"#[var type]{MY_CONSTANT_STRING} plus another string"
-
-(***********************************************************)
-(*                    INCLUDES GO BELOW                    *)
+(*                       CONSTANTS                         *)
 (***********************************************************)
 
-include 'amx-lib-log'
+MY_CONSTANT_INTEGER	    = 1
+MY_CONSTANT_STRING	    = 'a string'
+
+MY_CONSTANT_COMPOSITION = "#[var type]{MY_CONSTANT_STRING} plus another string"
 
 (***********************************************************)
-(*              DATA TYPE DEFINITIONS GO BELOW             *)
+(*                        INCLUDES                         *)
 (***********************************************************)
-DEFINE_TYPE
 
-// Is there a way to remove variable type?
+#include 'amx-lib-log'
+
+(***********************************************************)
+(*                       STRUCTURES                        *)
+(***********************************************************)
+
 volume:
     ui	lvl
     ch	mute
@@ -54,9 +47,8 @@ volume:
     ui	dimAmount
 
 (***********************************************************)
-(*              VARIABLE DEFINITIONS GO BELOW              *)
+(*                       VARIABLES                         *)
 (***********************************************************)
-DEFINE_VARIABLE
 
 ui myVar = 123
 
@@ -72,21 +64,19 @@ st[#]	string (char[#])
 [named]	user-defined type
 
 (***********************************************************)
-(*         SUBROUTINE/FUNCTION DEFINITIONS GO BELOW        *)
+(*                       FUNCTIONS                         *)
 (***********************************************************)
 
 volumeUp (chan) ->
     doStuff chan
 
 (***********************************************************)
-(*                 STARTUP CODE GOES BELOW                 *)
+(*                         EVENTS                          *)
 (***********************************************************)
-DEFINE_START
 
-(***********************************************************)
-(*                   THE EVENTS GO BELOW                   *)
-(***********************************************************)
-DEFINE_EVENT
+startup =>
+
+mainline =>
 
 data => vdvTP
     string ->
@@ -116,11 +106,7 @@ button =>
 	release ->
 		doStuff
 
-
 (***********************************************************)
-(*                 THE MAINLINE GOES BELOW                 *)
-(***********************************************************)
-DEFINE_PROGRAM
 
 // Comments: //, /* */, #
 
