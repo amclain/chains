@@ -24,6 +24,7 @@ module Chains
       out += " '#{filePath}'" if @filePath
       out += ' ' + @comment.to_s if @comment
       out += "\n"
+      @children.each {|e| out += "\t#{e.to_s}"}
       out
     end
   end

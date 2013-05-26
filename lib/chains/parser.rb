@@ -49,6 +49,14 @@ module Chains
         lastIndent = indent
         indent = indent_count line
         
+        # When indentation moves right, push a parent.
+        # When indentation moves left, pop a parent.
+        
+        # Pop the element from the last loop.
+        parent.pop if indent <= lastIndent && !parent.last.is_a?(Chains::Document)
+        # Pop the parent that's now out of scope from deindenting.
+        parent.pop if indent < lastIndent && !parent.last.is_a?(Chains::Document) 
+        
         # Check if the line ends with a comment.
         inlineResult = @inlineCommentRule.parse(line)
         
@@ -87,10 +95,10 @@ module Chains
         # Grab the parsed element to work with.
         e = stack.pop
         e.parent = parent.last
+        parent.last << e  # Make the element a child of the last parent.
+        parent << e       # Push this element onto the parent stack.
         
         e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
-        
-        @document << e
       end
       
     end
