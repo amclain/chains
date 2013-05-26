@@ -1,0 +1,36 @@
+Definition sections don't exist.
+
+  - Devices are unique in that they have colons in the assigned value
+    and can therefore be parsed out. (10001:1:0)
+    
+  - Constants are unique in that they are an assignment of an all-caps
+    symbol can can therefore be parsed out. (MY_CONSTANT = 1)
+    
+  - Includes are a preparser directive signified by a pound sign and can
+    therefore be parsed out. (#include 'amx-lib-volume')
+    
+  - Structures are a symbol ending in a colon at the highest level of
+    indentation and can therefore be parsed out. (volume:)
+    
+  - Global variables are assignments existing outside events or functions
+    at the highest level of indentation and can therefore be parsed out.
+    (ui myVar = 1)
+    
+  - Functions contain the pointer symbol at the highest level of
+    indentation and can therefore be parsed out. (myFunction ->)
+    
+  - Events contain the hash rocket symbol at the highest level of
+    indentation and can therefore be parsed out. (button =>)
+    
+  - The DEFINE_START and DEFINE_PROGRAM labels really signify events. They
+    can therefore be represented as events by their respective names, which
+    can be parsed out. (start =>, mainline =>)
+    If status is updated in event handlers, mainline => should be unnecessary
+    in most cases.
+    
+  - The other labels (DEFINE_LATCHING, DEFINE_MUTUALLY_EXCLUSIVE, etc.)
+    can be created with functions and probably shouldn't be used in the
+    first place. If they are really needed for some reason, they can be
+    defined in a NetLinx include file and a #include directive added in
+    the Chains file.
+  
