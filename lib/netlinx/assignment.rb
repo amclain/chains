@@ -23,7 +23,7 @@ module NetLinx
       
       @statement  = ''
       @statement += "#{@type.to_s} " if type
-      @statement += "#{@symbol.to_s.ljust 24} = #{@value.to_s}"
+      @statement += "#{@symbol.to_s} = #{@value.to_s}"
     end
   end
 end
