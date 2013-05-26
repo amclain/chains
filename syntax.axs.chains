@@ -10,13 +10,17 @@ PROGRAM_NAME='NetLinx Preparser'
 (^**********************************************************)
 
 // Single device.
-dvTP        = 33000:1:0
+dvTP        = 33000:1:0   'touchpanel-file[.tp4]'
 
 
 // Device combine.
-vdvTP       = 34000:1:0
+vdvTP       = 34000:1:0   'file-for-all-panels[.tp4]'
     dvTP1   = 10001:1:0
     dvTP2   = 10002:1:0
+    
+    
+// Optional device file paths can instruct a tool on how
+// to transfer the file without needing a workspace definition.
 
 (^**********************************************************)
 (^                       CONSTANTS                         *)
