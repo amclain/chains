@@ -68,7 +68,11 @@ f.read.each_line do |line|
   indentArray = line.scan(/([\t ]*).*/).first
   indent = indentArray.first.length if indentArray
   
+  # Assignment
+  # (\w+)\s*=\s*(\S+)*
+  
   # Device definition.
+  # This is a type of assignment.
   # (dvTP = 10001:1:0)
   line.strip.scan(/(\w+)\s*=\s*(\d{1,5}):?(\d{0,5}):?(\d{0,5})/).
     collect do |symbol, device, port, system|
@@ -81,6 +85,8 @@ f.read.each_line do |line|
       
       doc[:start] << NetLinx::Statement.new("combine_devices(#{parent[0].symbol}, #{symbol})") if parent.count > 1
     end
+    
+  
 end
 
 puts doc
