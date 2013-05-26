@@ -26,7 +26,7 @@ module Chains
       out += @text if @text
       each_child {|e| out += e.to_s}
       each_sibling {|e| out += e.to_s}
-      out += "\n" if @type == '//' || @type == '//^'
+      #out += "\n" if @type == '//' || @type == '//^'
       out
     end
   end

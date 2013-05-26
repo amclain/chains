@@ -2,6 +2,8 @@
 
 require "#{$lib}/chains/rules/rule"
 
+require "#{$lib}/chains/assignment"
+
 module Chains
   class AssignmentRule < Chains::Rule
     
@@ -10,8 +12,15 @@ module Chains
     end
     
     def parse(line)
-      # (\w*)\s*=\s*(\S*)   ## Not accurate.
+      @element = nil
       
+      line.scan(/\s*(\w*)\s*=\s*(.*)/).
+        collect do |symbol, value|
+          e = Chains::Assignment.new(nil, symbol, value)
+          @element = e unless e.empty?
+      end
+      
+      @element
     end
     
   end

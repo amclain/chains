@@ -12,6 +12,10 @@ module Chains
       @value = value
     end
     
+    def empty?
+      @symbol.nil? || @value.nil? || @symbol.empty? || @value.empty?
+    end
+    
     def to_s
       out  = ''
       out += "#{@symbol} = #{value}" 

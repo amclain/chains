@@ -53,6 +53,7 @@ module Chains
         inlineResult = @inlineCommentRule.parse(line)
         
         if inlineResult.is_a? Chains::Comment
+          inlineResult.parent = parent.last
           @document << inlineResult
           next
         elsif inlineResult.is_a? Chains::Verbatim
@@ -70,7 +71,7 @@ module Chains
           next unless result
           
           matchedRule = true
-          @document << result
+          stack << result
           break
         end
         
@@ -82,6 +83,14 @@ module Chains
           return
         end
         
+        
+        # Grab the parsed element to work with.
+        e = stack.pop
+        e.parent = parent.last
+        
+        e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
+        
+        @document << e
       end
       
     end
