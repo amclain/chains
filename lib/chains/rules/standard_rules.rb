@@ -1,6 +1,7 @@
 require "#{$lib}/chains/rules/rules"
 
 require "#{$lib}/chains/rules/assignment_rule"
+require "#{$lib}/chains/rules/comment_rule"
 require "#{$lib}/chains/rules/device_definition_rule"
 
 module Chains
@@ -11,6 +12,7 @@ module Chains
       super()
       
       @rules = [
+        Chains::CommentRule.new,
         Chains::DeviceDefinitionRule.new,
         Chains::AssignmentRule.new
       ]
