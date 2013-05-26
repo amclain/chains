@@ -20,7 +20,7 @@ module Chains
     def to_s
       out  = ''
       out += @header + "\n" if @header
-      out += "\n"
+      out += "\n" unless name == :footer
       out
     end
     

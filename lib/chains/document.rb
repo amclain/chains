@@ -13,7 +13,8 @@ module Chains
         :structures   => Chains::Section.new(self, :structures),
         :variables    => Chains::Section.new(self, :variables),
         :functions    => Chains::Section.new(self, :functions),
-        :events       => Chains::Section.new(self, :events)
+        :events       => Chains::Section.new(self, :events),
+        :footer       => Chains::Section.new(self, :footer)
       }
       
       # Create section headers.
@@ -35,6 +36,13 @@ module Chains
           title = 'FUNCTIONS'
         when :events
           title = 'EVENTS'
+        when :footer
+          section.header  = ''
+          section.header += "(^**********************************************************)\n"
+          section.header += "(^                     END OF PROGRAM                      *)\n"
+          section.header += "(^          DO NOT PUT ANY CODE BELOW THIS COMMENT         *)\n"
+          section.header += "(^**********************************************************)\n"
+          next
         else
           next 
         end
@@ -51,7 +59,7 @@ module Chains
       out  = ''
       
       out += @sections[:header].to_s
-      out += @sections[:programName].to_s
+      out += @sections[:programName].to_s if !@sections[:programName].empty?
       out += @sections[:devices].to_s
       out += @sections[:constants].to_s
       out += @sections[:includes].to_s
@@ -59,6 +67,7 @@ module Chains
       out += @sections[:variables].to_s
       out += @sections[:functions].to_s
       out += @sections[:events].to_s
+      out += @sections[:footer].to_s
       
       out
     end
