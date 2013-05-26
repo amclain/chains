@@ -3,9 +3,12 @@ require "#{$lib}/netlinx/section"
 module NetLinx
   class Document
     attr_accessor :programName
+    attr_accessor :header
+    attr_reader :sections
     
-    def initialize(programName = nil)
+    def initialize(programName = nil, header = nil)
       @programName = programName
+      @header = header
       
       @sections = {
         :devices => NetLinx::Section.new(:device),
@@ -27,17 +30,7 @@ module NetLinx
     def to_s
       out = ''
       
-      out += <<EOS
-(***********************************************************
-    #{@programName}
-    
-    This file was automatically generated.
-    The original code was written in CHAINS.
-    
-    http://sourceforge.net/projects/chains
-************************************************************)
-         
-EOS
+      out += @header.to_s + "\n" if @header
       
       out += "PROGRAM_NAME='#{@programName}'\n" if @programName
       

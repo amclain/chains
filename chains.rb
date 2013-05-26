@@ -15,7 +15,20 @@ require "#{$lib}/netlinx/function"
 require "#{$lib}/netlinx/statement"
 
 
-doc = NetLinx::Document.new 'Test Program'
+programName = 'Test Program'
+
+header = <<EOS
+(***********************************************************
+    #{programName}
+    
+    This file was automatically generated.
+    The original code was written in CHAINS.
+    
+    http://sourceforge.net/projects/chains
+************************************************************)
+EOS
+
+doc = NetLinx::Document.new programName, header
 
 doc[:devices] << NetLinx::Device.new(:dvTP, 10001, 1, 0)
 doc[:devices] << NetLinx::Device.new(:dvTP2, 10002)
