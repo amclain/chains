@@ -38,7 +38,6 @@ require "#{$lib}/netlinx/block"
 
 module NetLinx
   class Conditional < NetLinx::Block
-    attr_reader :event
     
     def initialize(symbol, condition = nil)
       super ''

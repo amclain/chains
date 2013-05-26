@@ -13,6 +13,8 @@ module NetLinx
     # Start
     # Program
     
+    attr_reader :name
+    
     def initialize(name = nil)
       super()
       @name = name

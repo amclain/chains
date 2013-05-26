@@ -45,11 +45,11 @@
 require "#{$lib}/netlinx/element"
 
 module NetLinx
-  attr_accessor :definitions
-  attr_accessor :initial
-  attr_accessor :final
-  
   class Block < NetLinx::Element
+    attr_accessor :definitions
+    attr_accessor :initial
+    attr_accessor :final
+  
     def initialize(compound)
       super()
       @compound = compound

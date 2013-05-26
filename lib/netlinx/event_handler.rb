@@ -2,6 +2,7 @@ require "#{$lib}/netlinx/block"
 
 module NetLinx
   class EventHandler < NetLinx::Block
+    attr_reader :handler
     
     def initialize(handler)
       super ''

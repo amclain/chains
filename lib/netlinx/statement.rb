@@ -11,6 +11,8 @@ require "#{$lib}/netlinx/element"
 
 module NetLinx
   class Statement < NetLinx::Element
+    attr_accessor :statement
+    
     def initialize(statement)
       super()
       @statement = statement

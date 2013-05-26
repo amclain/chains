@@ -13,6 +13,10 @@ require "#{$lib}/netlinx/statement"
 
 module NetLinx
   class Assignment < NetLinx::Statement
+    attr_reader :symbol
+    attr_reader :value
+    attr_reader :type
+    
     def initialize(symbol, value, type = nil)
       super ''
       

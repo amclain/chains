@@ -2,6 +2,8 @@ require "#{$lib}/netlinx/element"
 
 module NetLinx
   class Verbatim < NetLinx::Element
+    attr_accessor :text
+    
     def initialize(text = nil)
       super()
       @text = text

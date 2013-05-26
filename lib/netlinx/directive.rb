@@ -10,6 +10,7 @@ require "#{$lib}/netlinx/element"
 
 module NetLinx
   class Directive < NetLinx::Element
+    attr_reader :directive
     
     def initialize(directive, value = nil)
       super()

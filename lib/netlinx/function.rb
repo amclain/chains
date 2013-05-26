@@ -34,6 +34,9 @@ require "#{$lib}/netlinx/statement"
 
 module NetLinx
   class Function < NetLinx::Block
+    attr_reader :name
+    attr_reader :parameters
+    attr_reader :returnType
     
     def initialize(name, parameters = nil, returnType = nil)
       super ''

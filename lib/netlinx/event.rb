@@ -3,6 +3,7 @@ require "#{$lib}/netlinx/block"
 module NetLinx
   class Event < NetLinx::Block
     attr_reader :event
+    attr_reader :devchan
     
     def initialize(event = nil)
       super ''
