@@ -7,6 +7,7 @@ require "#{$lib}/netlinx/assignment"
 require "#{$lib}/netlinx/block"
 require "#{$lib}/netlinx/event"
 require "#{$lib}/netlinx/event_handler"
+require "#{$lib}/netlinx/function"
 require "#{$lib}/netlinx/statement"
 
 
@@ -30,5 +31,10 @@ push2.add_definition NetLinx::Statement.new('integer i')
 push2.add_initial NetLinx::Assignment.new(:i, 0)
 
 e << NetLinx::EventHandler.new(:release)
+
+#Function
+fn = NetLinx::Function.new('myFunction', {:i => :integer, :v => :integer}, :sinteger)
+doc[:functions] << fn
+
 
 puts doc

@@ -1,47 +1,52 @@
-require "#{$lib}/netlinx/element"
+require "#{$lib}/netlinx/block"
+require "#{$lib}/netlinx/statement"
 
 module NetLinx
-  class Function < NetLinx::Element
+  class Function < NetLinx::Block
     
     def initialize(name, parameters = nil, returnType = nil)
-      super()
+      super ''
       
       @name = name
-      @parameters = parameters
+      @parameters = parameters || Hash.new
       @returnType = returnType
-      @variables = Hash.new
     end
     
-    def add_variable(type, name)
-      @variables[type] = Array.new unless @variables[type]
-      @variables[type].push name
+    def empty?
+      @name.nil? || @name.empty?
     end
     
     def to_s
-      out = ''
+      @compound = ''
       
-      return out unless @name
+      #return @compouond unless @name
       
-      out += 'define_function '
-      out += "#{@returnType} " if @returnType
-      out += "#{@name}"
-      out += " (#{@parameters})" if @parameters
+      @compound += 'define_function '
+      @compound += "#{@returnType} " if @returnType
+      @compound += "#{@name}("
       
-      out += "\n{\n"
-      
-      # Print variables.
-      @variables.each do |type, names|
-        out += "\t#{type.to_s.downcase} #{names.join ', '}\n"
+      # Build input parameters.
+      unless @parameters.empty?
+        @paramArray = @parameters.to_a
+        
+        @paramArray.each do |param, type|
+          @compound += "#{type} #{param}"
+          @compound += ', ' unless param == @paramArray.last[0]
+        end
       end
       
-      out += "\n" unless @variables.empty?
+      @compound += ")"
       
-      # Print children.
-      @elements.each do |e|
-        e.to_s.each_line {|line| out += "\t#{line}"}
+      #If function has a return type, make sure it returns a value.
+      if @final.empty? && @returnType
+        if @returnType.to_s == 'char' || @returnType.to_s == 'widechar'
+          add_final NetLinx::Statement.new('return \'\'')
+        else
+          add_final NetLinx::Statement.new('return 0')
+        end
       end
       
-      out += "}\n"
+      super()
     end
     
   end
