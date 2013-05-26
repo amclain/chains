@@ -4,7 +4,7 @@ Document
   - Devices
     - Device Combine
   - Constants
-  - Preparser Directives
+  - Preparser Directives   <-- These could go anywhere, like #if_defined
   - Structures
   - Variables
   - Functions
@@ -13,6 +13,10 @@ Document
     - ?
   - Footer
     
+    
+Note: The items under Document are not sections, they are children. Multiples
+of each type can exist.
+
 ================================================================================
 
 

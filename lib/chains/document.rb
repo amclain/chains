@@ -1,75 +1,19 @@
-require "#{$lib}/chains/section"
+require "#{$lib}/chains/element"
+require "#{$lib}/chains/program_name"
+require "#{$lib}/chains/writer"
 
 module Chains
-  class Document
+  class Document < Chains::Element
+    attr_accessor :writer
     
-    def initialize(programName = nil)
-      @sections = {
-        :programName  => Chains::Section.new(self, :programName),
-        :header       => Chains::Section.new(self, :header),
-        :devices      => Chains::Section.new(self, :devices),
-        :constants    => Chains::Section.new(self, :constants),
-        :includes     => Chains::Section.new(self, :includes),
-        :structures   => Chains::Section.new(self, :structures),
-        :variables    => Chains::Section.new(self, :variables),
-        :functions    => Chains::Section.new(self, :functions),
-        :events       => Chains::Section.new(self, :events),
-        :footer       => Chains::Section.new(self, :footer)
-      }
-      
-      # Create section headers.
-      @sections.each do |key, section|
-        title = ''
-        
-        case section.name
-        when :devices
-          title = 'DEVICES'
-        when :constants
-          title = 'CONSTANTS'
-        when :includes
-          title = 'INCLUDES'
-        when :structures
-          title = 'STRUCTURES'
-        when :variables
-          title = 'VARIABLES'
-        when :functions
-          title = 'FUNCTIONS'
-        when :events
-          title = 'EVENTS'
-        when :footer
-          section.header  = ''
-          section.header += "(^**********************************************************)\n"
-          section.header += "(^                     END OF PROGRAM                      *)\n"
-          section.header += "(^          DO NOT PUT ANY CODE BELOW THIS COMMENT         *)\n"
-          section.header += "(^**********************************************************)\n"
-          next
-        else
-          next 
-        end
-        
-        section.header = Chains::Section.make_header title
-      end
-    end
-    
-    def [](section)
-      @sections[section]
+    def initialize(programName = nil, writer = nil)
+      super()
+      add_child Chains::ProgramName.new(programName) if programName
+      @writer = writer || Chains::Writer.new(self)
     end
     
     def to_s
-      out  = ''
-      
-      out += @sections[:header].to_s
-      out += @sections[:programName].to_s if !@sections[:programName].empty?
-      out += @sections[:devices].to_s
-      out += @sections[:constants].to_s
-      out += @sections[:includes].to_s
-      out += @sections[:structures].to_s
-      out += @sections[:variables].to_s
-      out += @sections[:functions].to_s
-      out += @sections[:events].to_s
-      out += @sections[:footer].to_s
-      
-      out
+      @writer.to_s
     end
     
   end
