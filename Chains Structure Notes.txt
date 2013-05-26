@@ -1,3 +1,20 @@
+Document
+  - Header
+  - Program Name
+  - Devices
+    - Device Combine
+  - Constants
+  - Preparser Directives
+  - Structures
+  - Variables
+  - Functions
+    - ?
+  - Events
+    - ?
+    
+================================================================================
+
+
 Definition sections don't exist.
 
   - Devices are unique in that they have colons in the assigned value
