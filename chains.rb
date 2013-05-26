@@ -9,20 +9,28 @@ require "#{$lib}/chains/element"
 require "#{$lib}/chains/comment"
 
 
-doc = Chains::Document.new
+# doc = Chains::Document.new
+# 
+# h = <<EOS
+# (!**********************************************************
+    # MY CHAINS FILE
+    # Example of how the Chains syntax should look.
+#     
+    # File extension = .axs.chains
+# ************************************************************)
+# EOS
+# 
+# header = Chains::Comment.new h
+# doc << header
+# 
+# doc << Chains::ProgramName.new('Test Program')
+# 
+# puts doc
 
-h = <<EOS
-(!**********************************************************
-    MY CHAINS FILE
-    Example of how the Chains syntax should look.
-    
-    File extension = .axs.chains
-************************************************************)
-EOS
+input = File.open("#{$root}/test/input.axs.chains", 'r').read
 
-header = Chains::Comment.new h
-doc << header
+parser = Chains::Parser.new input
 
-doc << Chains::ProgramName.new('Test Program')
+doc = parser.document
 
 puts doc

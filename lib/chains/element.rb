@@ -61,6 +61,6 @@ module Chains
       end
       r.each
     end
-      
+    
   end
 end

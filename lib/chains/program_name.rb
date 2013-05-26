@@ -4,7 +4,8 @@ module Chains
   class ProgramName < Chains::Element
     attr_accessor :text
     
-    def initialize(text = nil)
+    def initialize(parent, text)
+      super parent
       @text = text
     end
     

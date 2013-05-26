@@ -1,12 +1,14 @@
 require "#{$lib}/chains/element"
 
 module Chains
-  class Verbatim < Chains::Element
+  class Assignment < Chains::Element
     attr_accessor :text
     
-    def initialize(parent, text = nil)
+    def initialize(parent, symbol, value)
       super parent
-      @text = text
+      
+      @symbol = symbol
+      @value = value
     end
     
     def to_s

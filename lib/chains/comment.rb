@@ -1,3 +1,7 @@
+# Note:
+# // or //^ comment
+# (//\^?)\s*([^\r\n]*)
+
 require "#{$lib}/chains/element"
 
 module Chains
@@ -5,8 +9,8 @@ module Chains
     attr_accessor :type
     attr_reader :text
     
-    def initialize(text = nil)
-      super()
+    def initialize(parent, text = nil)
+      super parent
       self.text = text
     end
     

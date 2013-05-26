@@ -5,7 +5,7 @@ module Chains
     attr_accessor :name
     attr_accessor :header
     
-    def initialize(parent = nil, name = nil, header = nil)
+    def initialize(parent, name = nil, header = nil)
       super parent
       @name = name
       @header = header
