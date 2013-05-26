@@ -69,6 +69,10 @@ Operations
   - Variable Declaration
     Variable type in front of a symbol. Optional value.
     
+  - Device Definition
+    Like an assignment, but has colons in the value and an optional
+    file path.
+    
   - Device Combine
     Children of an assignment.
     

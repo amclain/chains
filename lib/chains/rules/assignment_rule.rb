@@ -11,7 +11,6 @@ module Chains
     
     def parse(line)
       # (\w*)\s*=\s*(\S*)   ## Not accurate.
-      @text = ''
       
     end
     

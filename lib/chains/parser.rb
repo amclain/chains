@@ -28,6 +28,7 @@ module Chains
       
       # TODO: For now we don't care. Assume input string for testing.
       
+      
       parent = Array.new   # Push and pop this to track nesting.
       parent << @document
       
@@ -40,6 +41,9 @@ module Chains
       
       input.each_line do |line|
         lineNum += 1
+        
+        # Skip empty lines.
+        next if line.strip.empty?
         
         # Update indent level.
         lastIndent = indent
@@ -60,16 +64,19 @@ module Chains
         
         
         # Run line through rules.
-        result = nil
+        matchedRule = false
         @rules.each do |rule|
           result = rule.parse(line)
           next unless result
           
+          matchedRule = true
           @document << result
+          break
         end
         
-        unless result
+        unless matchedRule
           # TODO: Raise exception.
+          #binding.pry
           puts "SYNTAX ERROR line #{lineNum}:\n#{line}"
           @document = nil
           return
