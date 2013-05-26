@@ -65,6 +65,8 @@ ch	character
 wc	wide character
 st	string (char[255])
 st[#]	string (char[#])
+dv  device
+dc  devchan
 [named]	user-defined type
 
 (^**********************************************************)
@@ -118,7 +120,7 @@ button =>
 
 // Comments omitted from NetLinx: //^, /^ */, (^ *)
 
-// Arrays:
+// Ranges:
 	[1..5]		// [1, 2, 3, 4, 5]
 	[1...5]		// [1, 2, 3, 4]
 
@@ -134,20 +136,20 @@ button =>
 
 // Switch, Case
 	switch i
-		case 1
-			doStuff
-		case 2
-			doStuff
+	case 1
+		doStuff
+	case 2
+		doStuff
 
-		case 3: doStuff
-		case 4: doStuff
+	case 3: doStuff
+	case 4: doStuff
 
 // Case, When
 
 	case i
 	when 1
 		doStuff
-	when 2
+	when 2: doStuff
 	when x
 
 	

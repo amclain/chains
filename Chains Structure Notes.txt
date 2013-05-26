@@ -57,3 +57,46 @@ Definition sections don't exist.
     defined in a NetLinx include file and a #include directive added in
     the Chains file.
   
+Operations
+
+  - Assignment
+    Symbol followed by an equals sign followed by a value.
+    
+  - Constant
+    An assignment with a symbol in all caps.
+    
+  - Variable Declaration
+    Variable type in front of a symbol. Optional value.
+    
+  - Device Combine
+    Children of an assignment.
+    
+  - String Replacement
+  
+  - Preparser Directive
+    Statement starting with #.
+    
+  - Structure
+    Symbol ending in a colon with children.
+    
+  - Function
+    Line contains the pointer symbol (->).
+    
+  - Event
+    Line contains the hash rocket symbol (=>).
+    
+  - Comments
+    Line starts with: /*, (*, /^, (^, (!
+    Line contains: //, //^
+    
+  - Ranges
+    Contained in braces. [1..5]
+    
+  - Loops
+  
+  - Ternary
+  
+  
+  
+  
+  
