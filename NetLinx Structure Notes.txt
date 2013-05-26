@@ -88,11 +88,11 @@ the curly braces.
 
     if (i > 0)
     {
-	doStuff(i);   <- CHILD of If
+		doStuff(i);   <- CHILD of If
     }
     else              <- SIBLING of If
     {
-	doNothing();  <- CHILD of Else
+		doNothing();  <- CHILD of Else
     }
 
 
@@ -111,21 +111,20 @@ Functions are a type of code block with a:
     - optional return value for functions with a return type
     
     - no sibling functions
-    - no child functions
 
 define_function integer add(integer a, integer b)
 {
-    // Variables
+    // Variables (Declarations)
     integer i;
     
-    // Initializers
+    // Initializers (Initial)
     i = 0;
     
-    // Statements
+    // Statements (Children)
     if (i > 0)...
     doStuff(i);
     
-    // Return
+    // Return (Final)
     return i;
 }
 

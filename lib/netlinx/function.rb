@@ -1,3 +1,34 @@
+=begin
+  Functions are a type of code block with a:
+    - 'define_function' starting tag
+    - optional return value
+    - function name
+    - type/value array of sibling input parameters
+    
+    - variable declarations at start of children
+    - initializers after varaible declarations
+    - statements (stuff to execute) after initializers
+    - optional return value for functions with a return type
+    
+    - no sibling functions
+  
+  define_function integer add(integer a, integer b)
+  {
+      // Variables (Declarations)
+      integer i;
+      
+      // Initializers (Initial)
+      i = 0;
+      
+      // Statements (Children)
+      if (i > 0)...
+      doStuff(i);
+      
+      // Return (Final)
+      return i;
+  } 
+=end
+
 require "#{$lib}/netlinx/block"
 require "#{$lib}/netlinx/statement"
 
