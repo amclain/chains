@@ -4,11 +4,11 @@ require "#{$lib}/chains/writer"
 
 module Chains
   class Document < Chains::Element
+    attr_accessor :programName
     attr_accessor :writer
     
-    def initialize(programName = nil, writer = nil)
+    def initialize(writer = nil)
       super()
-      add_child Chains::ProgramName.new(programName) if programName
       @writer = writer || Chains::Writer.new(self)
     end
     

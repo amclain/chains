@@ -53,7 +53,7 @@ module Chains
       r.each
     end
     
-    def each_sibling(element_class = nil)
+    def each_sibling(element_class = nil, &block)
       if element_class
         r = @siblings.select {|e| e.is_a? element_class}.each(&block)
       else

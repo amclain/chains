@@ -112,11 +112,11 @@ button =>
 
 (^**********************************************************)
 
-// Header: (# *)
+// Header: (! *)
 
 // Comments: //, /* */, (* *)
 
-// Comments omitted from NetLinx: //^, /*^ */, (^ *)
+// Comments omitted from NetLinx: //^, /^ */, (^ *)
 
 // Arrays:
 	[1..5]		// [1, 2, 3, 4, 5]
@@ -144,7 +144,7 @@ button =>
 
 // Case, When
 
-case i
+	case i
 	when 1
 		doStuff
 	when 2
