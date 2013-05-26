@@ -15,8 +15,8 @@ module Chains
     end
     
     def text=(value)
-      @text = value
-      text = value.strip
+      @text = value || ''
+      text = @text.strip
       @type = text[0, 2]
       @type += text[3] if text[3] == '^'
     end

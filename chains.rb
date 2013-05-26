@@ -33,4 +33,4 @@ parser = Chains::Parser.new input
 
 doc = parser.document
 
-puts doc
+puts doc if doc

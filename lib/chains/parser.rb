@@ -2,6 +2,10 @@
 
 
 require "#{$lib}/chains/document"
+require "#{$lib}/chains/rules/standard_rules"
+require "#{$lib}/chains/rules/inline_comment_rule"
+
+require "#{$lib}/chains/verbatim"
 
 module Chains
   class Parser
@@ -9,6 +13,10 @@ module Chains
     
     def initialize(input = nil)
       @document = Chains::Document.new
+      
+      @inlineCommentRule = Chains::InlineCommentRule.new
+      @rules = Chains::StandardRules.new
+      
       parse input if input
     end
     
@@ -20,7 +28,11 @@ module Chains
       
       # TODO: For now we don't care. Assume input string for testing.
       
-      stack = Array.new   # Push and pop this to track nesting.
+      parent = Array.new   # Push and pop this to track nesting.
+      parent << @document
+      
+      stack = Array.new   # Push and pop elements being created.
+      
       lineNum = 0
       indent = 0
       lastIndent = 0
@@ -33,7 +45,36 @@ module Chains
         lastIndent = indent
         indent = indent_count line
         
-        binding.pry
+        # Check if the line ends with a comment.
+        inlineResult = @inlineCommentRule.parse(line)
+        
+        if inlineResult.is_a? Chains::Comment
+          @document << inlineResult
+          next
+        elsif inlineResult.is_a? Chains::Verbatim
+          line = inlineResult.text
+        end
+        
+        # Check for line rollover. (Ends with '(' or ',').
+        
+        
+        
+        # Run line through rules.
+        result = nil
+        @rules.each do |rule|
+          result = rule.parse(line)
+          next unless result
+          
+          @document << result
+        end
+        
+        unless result
+          # TODO: Raise exception.
+          puts "SYNTAX ERROR line #{lineNum}:\n#{line}"
+          @document = nil
+          return
+        end
+        
       end
       
     end

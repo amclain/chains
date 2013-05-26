@@ -57,6 +57,7 @@ Definition sections don't exist.
     defined in a NetLinx include file and a #include directive added in
     the Chains file.
   
+  
 Operations
 
   - Assignment
@@ -97,6 +98,9 @@ Operations
   - Ternary
   
   
+Rollover
+
+  A line can roll over when:
   
-  
+    - It ends with ( or ,
   

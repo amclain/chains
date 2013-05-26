@@ -14,6 +14,7 @@ module Chains
     def to_s
       out  = ''
       out += @text if @text
+      out += ' ' + @comment.to_s if @comment
       out
     end
   end

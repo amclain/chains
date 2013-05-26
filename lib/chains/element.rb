@@ -3,11 +3,13 @@ module Chains
     attr_accessor :parent
     attr_accessor :children
     attr_accessor :siblings
+    attr_accessor :comment
     
     def initialize(parent = nil)
       @parent = parent
       @children = Array.new
       @siblings = Array.new
+      @comment = nil
     end
     
     def <<(e)

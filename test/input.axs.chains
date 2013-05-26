@@ -1,6 +1,7 @@
-dvIO		= 5001:9:0
+// This is a comment.
+dvIO		= 5001:9:0		// Another comment.
 vdvTP		= 33000:1:0
 	dvTP	= 10001:1:0
 	dvTP2	= 10002:1:0
 
-myVar		= 3
+myVar		= 3				// Third comment.
