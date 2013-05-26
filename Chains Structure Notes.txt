@@ -1,7 +1,8 @@
 Definition sections don't exist.
 
   - Devices are unique in that they have colons in the assigned value
-    and can therefore be parsed out. (10001:1:0)
+    and exist outside of events and functions. They can therefore be
+    parsed out. (10001:1:0)
     
   - Constants are unique in that they are an assignment of an all-caps
     symbol can can therefore be parsed out. (MY_CONSTANT = 1)

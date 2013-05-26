@@ -53,7 +53,7 @@ module NetLinx
 EOS
       
       # Replace tabs with 3 spaces.
-      out.gsub /\t/, '   '
+      out.gsub(/\t/, '   ')
     end
     
   end
