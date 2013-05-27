@@ -16,8 +16,8 @@ module Chains
       
       # Separate out multi-line comments.
       # Ignore // and //^ which are handled by the inline comment parser.
-      line.scan(/(.*)\s*(\/\/\^?.*)/).collect do |statement, comment|
-        
+      line.scan(/(.*)\s*(\/\/\^?.*)/).collect do |text|
+        binding.pry
       end
       
       @element  

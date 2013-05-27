@@ -5,6 +5,7 @@ require "#{$lib}/chains/document"
 require "#{$lib}/chains/rules/standard_rules"
 require "#{$lib}/chains/rules/inline_comment_rule"
 
+require "#{$lib}/chains/comment"
 require "#{$lib}/chains/verbatim"
 
 module Chains
@@ -16,6 +17,9 @@ module Chains
       
       @inlineCommentRule = Chains::InlineCommentRule.new
       @rules = Chains::StandardRules.new
+      
+      @commentStartingSymbols = ['(*', '(^', '(!', '/*', '/^']
+      @commentEndingSymbols   = ['*)', '^)', '!)', '*/', '^/']
       
       parse input if input
     end
@@ -38,24 +42,61 @@ module Chains
       indent = 0
       lastIndent = 0
       lineBuf = ''
+      inBlockComment = false
+      lineRollover = false
       
       input.each_line do |line|
         lineNum += 1
         
         # Skip empty lines.
-        next if line.strip.empty?
+        next if line.strip.empty? && !inBlockComment
         
-        # Update indent level.
-        lastIndent = indent
-        indent = indent_count line
         
-        # When indentation moves right, push a parent.
-        # When indentation moves left, pop a parent.
+        unless inBlockComment || lineRollover
+          # Update indent level.
+          lastIndent = indent
+          indent = indent_count line
+          
+          # When indentation moves right, push a parent.
+          # When indentation moves left, pop a parent.
+          
+          binding.pry if lineNum == 9
+          
+          # Pop the element from the last loop.
+          parent.pop if indent <= lastIndent && !parent.last.is_a?(Chains::Document)
+          # Pop the parent that's now out of scope from deindenting.
+          parent.pop if indent < lastIndent && !parent.last.is_a?(Chains::Document)
+        end
         
-        # Pop the element from the last loop.
-        parent.pop if indent <= lastIndent && !parent.last.is_a?(Chains::Document)
-        # Pop the parent that's now out of scope from deindenting.
-        parent.pop if indent < lastIndent && !parent.last.is_a?(Chains::Document) 
+        
+        # Check for multiline comment.
+        # Ends with '*/' or '*)'. Possibly on another line.
+        inBlockComment = true if line.strip.start_with? *@commentStartingSymbols
+        
+        lineBuf += line.delete("\r").delete("\n") + "\n"
+        
+        if inBlockComment
+          # Look for closing tag.
+          inBlockComment = false if line.strip.end_with? *@commentEndingSymbols
+          
+          unless inBlockComment
+            e = Chains::Comment.new(parent.last, lineBuf)
+            e.parent = parent.last
+            parent.last << e
+            lineBuf = ''
+          end 
+          
+          next # Skip to next line.
+        end
+        
+        
+        
+        # Check for line rollover. (Ends with '(' or ',').
+        
+        
+        
+        
+         
         
         # Check if the line ends with a comment.
         inlineResult = @inlineCommentRule.parse(line)
@@ -67,10 +108,6 @@ module Chains
         elsif inlineResult.is_a? Chains::Verbatim
           line = inlineResult.text
         end
-        
-        # Check for line rollover. (Ends with '(' or ',').
-        
-        
         
         # Run line through rules.
         matchedRule = false

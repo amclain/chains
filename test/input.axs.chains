@@ -1,7 +1,38 @@
-// This is a comment.
-dvIO		= 5001:9:0		// Another comment.
-vdvTP		= 33000:1:0
-	dvTP	= 10001:1:0		// Commented child.
-	dvTP2	= 10002:1:0
+(!**********************************************************
+    Example of how the Chains syntax should look.
+    
+    File extension = .axs.chains
+************************************************************)
 
-myVar		= 3				// Third comment.
+PROGRAM_NAME = 'NetLinx Preparser'
+(^**********************************************************)
+(^                        DEVICES                          *)
+(^**********************************************************)
+
+// Single device.
+dvTP        = 33000:1:0   'touchpanel-file[.tp4]'
+
+
+// Device combine.
+vdvTP       = 34000:1:0   'file-for-all-panels[.tp4]'
+    dvTP1   = 10001:1:0
+    dvTP2   = 10002:1:0
+    
+    
+// Optional device file paths can instruct a tool on how
+// to transfer the file without needing a workspace definition.
+
+(^**********************************************************)
+(^                       CONSTANTS                         *)
+(^**********************************************************)
+
+MY_CONSTANT_INTEGER	    = 1
+MY_CONSTANT_STRING	    = 'a string'
+
+MY_CONSTANT_COMPOSITION = "#[var type]{MY_CONSTANT_STRING} plus another string"
+
+(^**********************************************************)
+(^                        INCLUDES                         *)
+(^**********************************************************)
+
+//#include 'amx-lib-log'
