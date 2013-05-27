@@ -13,17 +13,6 @@ class TestChainsParser < Test::Unit::TestCase
     @parser = nil
   end
   
-  # def test_rollover_concatenation
-    # input =
-# <<EOS
-# ui myVar2 =
-  # 456
-# EOS
-# 
-    # doc = @parser.parse(input)
-    # assert doc.to_s == input,
-      # "Function input does not match output.\n\n#{input}\n\n#{doc.to_s}"
-  # end
   
   def test_assignment
     input = 
@@ -117,6 +106,44 @@ EOS
         end
       end
     end
+  end
+  
+  # def test_rollover_concatenation
+    # input =
+# <<EOS
+# myVar2 =
+  # 456
+# EOS
+# 
+    # doc = @parser.parse(input)
+#     
+    # assert doc.each_child.count == 1
+    # doc.each_child do |child|
+      # assert child.symbol == 'myVar2'
+      # assert child.value == '456'
+    # end
+  # end
+  
+  def test_indent_count
+    # Nothing indented.
+    r = @parser.send(:indent_count, "test")
+    assert r == 0
+    
+    # Tab is the character to count.
+    r = @parser.send(:indent_count, "\t\ttest")
+    assert r == 2
+    
+    # Count tabs, ignore the space.
+    r = @parser.send(:indent_count, "\t test")
+    assert r == 1
+    
+    # Space is the character to count.
+    r = @parser.send(:indent_count, "    test")
+    assert r == 4
+    
+    # Count spaces, ignore tab.
+    r = @parser.send(:indent_count, "   \ttest")
+    assert r == 3
   end
   
   # def test_block_comment

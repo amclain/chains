@@ -71,10 +71,10 @@ module Chains
         next if line.strip.empty? && !inBlockComment
         
         # Check for line rollover.
-        # if @rolloverOnceSymbols.include? line.strip[-1]
-          # lineStack << [lineNum, line]
-          # next # Skip to next line.
-        # end
+        if @rolloverOnceSymbols.include? line.strip[-1]
+          lineStack << {lineNum => line}
+          next # Skip to next line.
+        end
         
         # @rolloverOnceSymbols.each do |symbol|
           # if symbol == line.strip[-1]
@@ -171,8 +171,18 @@ module Chains
     private
     def indent_count(line)
       indent = 0
-      indentArray = line.scan(/([\t ]*).*/).first
-      indent = indentArray.first.length if indentArray
+      
+      case line[0]
+      when ' '
+        indentArray = line.scan(/([ ]*).*/).first
+        indent = indentArray.first.length if indentArray
+      when "\t"
+        indentArray = line.scan(/([\t]*).*/).first
+        indent = indentArray.first.length if indentArray  
+      else
+        # Line starts with a statement, not whitespace.
+      end
+      
       indent
     end
     

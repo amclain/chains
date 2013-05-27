@@ -19,6 +19,10 @@ of each type can exist.
 
 ================================================================================
 
+Indentation
+
+  - Indent with EITHER spaces OR tabs, but not both. Spaces are recommended.
+
 
 Definition sections don't exist.
 
