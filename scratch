@@ -1,0 +1,25 @@
+Parser
+
+	lineNum ++
+	
+	
+	check for empty lines (except in block comments)
+	
+	
+	concatinate rolled-over lines
+		indentation doesn't matter
+		
+	
+	check for indentation
+	
+	
+	check for block comment
+		indentation does matter
+	
+	
+	check for single line comment   <-- can do easier with a string split than regex
+	
+	
+	rules
+	
+	

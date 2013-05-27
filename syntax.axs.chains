@@ -56,6 +56,7 @@ volume:
 
 ui myVar = 123
 
+/*
 // Variable types:
 ui	unsigned int
 si	signed int
@@ -68,6 +69,11 @@ st[#]	string (char[#])
 dv  device
 dc  devchan
 [named]	user-defined type
+*/
+
+// Split after equals.
+ui myVar2 =
+	456
 
 (^**********************************************************)
 (^                       FUNCTIONS                         *)
