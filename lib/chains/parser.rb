@@ -22,21 +22,7 @@ module Chains
       @commentClosingSymbols   = ['*)', '^)', '!)', '*/', '^/']
       
        
-      @rolloverOpeningSymbols = [
-        '(', '{', '['
-      ]
-      # Ending symbol needs to be in the same array position as
-      # the starting symbol.
-      @rolloverClosingSymbols = [
-        ')', '}', ']'
-      ]
-      @rolloverOnceSymbols = [
-        ',', '=', '+', '-', '*', '/', '%', '^', '&', '|', '<', '>', '\\'
-      ]
       
-      # More rollover:
-      # ':', '?' # TODO: These two must not have alphanumeric before them.
-      # Quotes without a closing set?
       
       parse input if input
     end
@@ -50,18 +36,19 @@ module Chains
       # TODO: For now we don't care. Assume input string for testing.
       
       
-      parent = Array.new   # Push and pop this to track nesting.
+      parent = Array.new    # Push and pop this to track nested statement relationships.
       parent << @document
+
+      stack = Array.new     # Push and pop elements being created.
       
-      stack = Array.new   # Push and pop elements being created.
+      rollover = Array.new  # Push and pop to track nested rollover.
+      rollover << ParserRollover.new
       
       lineNum = 0
       indent = 0
       lastIndent = 0
       
       inBlockComment = false
-      rolloverSymbolStack = Array.new
-      lineStack = Array.new
       
       
       input.each_line do |line|
@@ -71,17 +58,7 @@ module Chains
         next if line.strip.empty? && !inBlockComment
         
         # Check for line rollover.
-        if @rolloverOnceSymbols.include? line.strip[-1]
-          lineStack << {lineNum => line}
-          next # Skip to next line.
-        end
         
-        # @rolloverOnceSymbols.each do |symbol|
-          # if symbol == line.strip[-1]
-            # rolloverSymbolStack << symbol
-            # break
-          # end
-        # end
         
         
         
@@ -184,6 +161,83 @@ module Chains
       end
       
       indent
+    end
+    
+  end
+  
+  class ParserRollover
+    attr_accessor :starting_line_number
+    
+    def initialize
+      @beginCapture = false # Flag that line begins rollover capture.
+      @endCapture = false   # Flag that line ends rollover capture.
+      @isCapturing = false  # Flag that rollover is being captured.
+      
+      @rolloverOnce = false # Flag to rollover once and test for rollover again on next line.
+      @openingSymbol = nil
+      @closingSymbol = nil
+      @starting_line_number = 0
+      @lineBuf = Array.new
+      
+      
+      # Rollover starts when the line ends with an opening symbol.
+      @rolloverOpeningSymbols = [
+        '(', '{', '['
+      ]
+      # Ending symbol needs to be in the same array position as
+      # the starting symbol.
+      @rolloverClosingSymbols = [
+        ')', '}', ']'
+      ]
+      @rolloverOnceSymbols = [
+        ',', '=', '+', '-', '*', '/', '%', '^', '&', '|', '<', '>', '\\'
+      ]
+      
+      # More rollover:
+      # ':', '?' # TODO: These two must not have alphanumeric before them.
+      # Quotes without a closing set?
+    end
+    
+    def <<(line)
+      add_line line
+    end
+    
+    def add_line(line)
+      # Check for rollover-once symbols.
+      if @rolloverOnceSymbols.include? line.strip[-1]
+        
+      end
+      
+      # Check for begin rollover symbols.
+      # @rolloverOnceSymbols.each do |symbol|
+        # if symbol == line.strip[-1]
+          # rolloverSymbolStack << symbol
+          # break
+        # end
+      # end
+      
+      
+      @lineBuf << line if @isCapturing
+    end
+    
+    def begin_capture?
+      @beginCapture
+    end
+    
+    def end_capture?
+      @endCapture
+    end
+    
+    def capturing?
+      @isCapturing
+    end
+    
+    def empty?
+      @lineBuf.empty?
+    end
+    
+    def to_s
+      
     end
     
   end
