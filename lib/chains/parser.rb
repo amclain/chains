@@ -194,12 +194,12 @@ module Chains
         ')', '}', ']'
       ]
       @rolloverOnceSymbols = [
-        ',', '=', '+', '-', '*', '/', '%', '^', '&', '|', '<', '>', '\\'
+        ',', '=', '+', '-', '*', '/', '%', '^', '&', '|', '<', '\\', '?',
+        '>', # Must not have a - or = before it.
+        ':', # TODO: Must not have a preceeding alphanumeric character.
+        # Quotes without a closing set?
       ]
       
-      # More rollover:
-      # ':', '?' # TODO: These two must not have alphanumeric before them.
-      # Quotes without a closing set?
     end
     
     def <<(line)
@@ -207,11 +207,14 @@ module Chains
     end
     
     def add_line(line)
-      #binding.pry if line == '   123   '
+      line.strip!
+      #binding.pry if line == ') -> doStuff'
+      
+      # Reset flags.
+      @beginCapture = false
       
       if @rolloverOnce
         # Reset flags.
-        @beginCapture = false
         @endCapture = true
         @isCapturing = true
         @rolloverOnce = false
@@ -229,26 +232,44 @@ module Chains
         return
       end
       
+      # Check for the closing rollover symbol.
+      if will_end_rollover? line
+        @endCapture = true
+        @isCapturing = false
+      end
+      
       # Check for rollover-once symbols.
-      if @rolloverOnceSymbols.include? line.strip[-1]
+      if will_rollover_once? line
         @beginCapture = true
         @endCapture = false
         @isCapturing = true
         @rolloverOnce = true
         
-        @lineBuf << line.strip
+        @lineBuf << line
         return
       end
       
       # Check for begin rollover symbols.
-      # @rolloverOnceSymbols.each do |symbol|
-        # if symbol == line.strip[-1]
-          # rolloverSymbolStack << symbol
-          # break
-        # end
-      # end
+      if will_rollover_many? line
+          symbol = line[-1]
+        
+          @beginCapture = true
+          @endCapture = false
+          @isCapturing = true
+          @rolloverOnce = false
+          
+          @openingSymbol = symbol
+          
+          # Store the corresponding closing symbol.
+          @closingSymbol = @rolloverClosingSymbols[
+            @rolloverOpeningSymbols.index @openingSymbol
+          ]
+          
+          @lineBuf << line
+          return
+      end
       
-      @lineBuf << line if @isCapturing
+      @lineBuf << line if @isCapturing || @endCapture
     end
     
     def begin_capture?
@@ -280,7 +301,52 @@ module Chains
       @openingSymbol = nil
       @closingSymbol = nil
       @starting_line_number = 0
-      @lineBuf = Array.clear
+      @lineBuf.clear
+    end
+    
+    def will_rollover_once?(line)
+      # Check for rollover-once symbols.
+      symbol = line[-1]
+      if @rolloverOnceSymbols.include? symbol
+        skip = false
+        
+        # Things to skip.
+        ch  = line[-2]
+        case symbol
+          
+        # Function definition.
+        #  -> or =>
+        when '>'
+          skip = true if ch == '-' || ch == '='
+        
+        # Ternary, NOT type definition.
+        # (x > 0) ? 1 : 0
+        # NOT myType:
+        when ':'
+          # Do not rollover if preceeding character is alphanumeric.
+          skip = true if ch =~ /\w/
+        end
+        
+        return true unless skip
+      end
+      
+      return false
+    end
+    
+    def will_rollover_many?(line)
+      # Check for begin rollover symbols.
+      @rolloverOpeningSymbols.each do |symbol|
+        if symbol == line[-1]
+          return true
+        end
+      end
+      
+      return false
+    end
+    
+    def will_end_rollover?(line)
+      # Check for the closing rollover symbol.
+      @closingSymbol == line[0] ? true : false
     end
     
     def to_s
@@ -290,9 +356,19 @@ module Chains
       #       rejoins strings based on the ending character of the
       #       last line.
       #       Sometimes joins need spaces, sometimes they need commas.
+      separator = ''
+      
       @lineBuf.each do |line|
-        out += ' ' unless line == @lineBuf.first
+        separator = ''  if will_end_rollover? line
+        
+        out += separator unless line == @lineBuf.first
         out += line.strip
+        
+        # First line is going to ignore the separator.
+        # Set it here for the line to follow.
+        separator = ', '
+        separator = ''  if will_rollover_many? line
+        separator = ' ' if will_rollover_once? line
       end
       
       out

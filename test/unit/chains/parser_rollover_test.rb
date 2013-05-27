@@ -39,7 +39,32 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert @rollover.capturing? == false
     assert @rollover.rollover_once? == false
     
+    # Clear rollover.
+    @rollover.clear
+    assert @rollover.begin_capture? == false
+    assert @rollover.end_capture? == false
+    assert @rollover.capturing? == false
+    assert @rollover.rollover_once? == false
+    assert @rollover.to_s == ''
+    
     # Separated function parameters.
+    @rollover << 'myFunction ('
+    assert @rollover.begin_capture?
+    assert @rollover.capturing?
+    @rollover << 'ui a'
+    assert @rollover.capturing?
+    assert @rollover.begin_capture? == false
+    assert @rollover.end_capture? == false
+    assert @rollover.rollover_once? == false
+    @rollover << 'ui b'
+    @rollover << 'ui c'
+    @rollover << ') -> doStuff'
+    assert @rollover.end_capture?
+    assert @rollover.capturing? == false
+    
+    s = @rollover.to_s
+    assert s == 'myFunction (ui a, ui b, ui c) -> doStuff',
+      "Output: #{s}"
     
     # Nested array.
   end
