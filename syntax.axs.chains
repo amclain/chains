@@ -75,6 +75,14 @@ dc  devchan
 
 volumeUp chan ->
     doStuff chan
+    
+// Split parameters on open parenthesis.
+sinteger setVolume(
+	ui channel
+	ui level
+) ->
+	doStuff channel, level
+	
 
 (^**********************************************************)
 (^                         EVENTS                          *)
