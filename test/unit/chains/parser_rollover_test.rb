@@ -26,6 +26,11 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert @rollover.rollover_once? == false
     assert @rollover.starting_line_number == 1
     
+    # Returns correct output.
+    s = @rollover.to_s
+    assert s == 'myVar2 = 123',
+      "Output: #{s}"
+    
     # Rollover doesn't accept additional input after
     # 'end_capture?' flag is raised.
     @rollover << 'myVar3 ='

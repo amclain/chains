@@ -213,7 +213,7 @@ module Chains
         # Reset flags.
         @beginCapture = false
         @endCapture = true
-        @isCapturing = false
+        @isCapturing = true
         @rolloverOnce = false
       end
       
@@ -221,6 +221,8 @@ module Chains
       # after the 'end_capture?' flag is raised, as it
       # will not accept additional input.
       if @endCapture && !@rolloverOnce
+        @lineBuf << line if @isCapturing
+        
         @beginCapture = false
         @isCapturing = false
         @rolloverOnce = false
@@ -235,9 +237,8 @@ module Chains
         @rolloverOnce = true
         
         @lineBuf << line.strip
+        return
       end
-      
-      
       
       # Check for begin rollover symbols.
       # @rolloverOnceSymbols.each do |symbol|
@@ -246,7 +247,6 @@ module Chains
           # break
         # end
       # end
-      
       
       @lineBuf << line if @isCapturing
     end
@@ -284,7 +284,18 @@ module Chains
     end
     
     def to_s
+      out = ''
       
+      # TODO: This will have to be somewhat intelligent on how it
+      #       rejoins strings based on the ending character of the
+      #       last line.
+      #       Sometimes joins need spaces, sometimes they need commas.
+      @lineBuf.each do |line|
+        out += ' ' unless line == @lineBuf.first
+        out += line.strip
+      end
+      
+      out
     end
     
   end
