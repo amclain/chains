@@ -1,6 +1,8 @@
 require 'test_helper'
 require "#{$lib}/chains/parser"
 
+require "#{$lib}/chains/device_definition"
+
 class TestChainsParser < Test::Unit::TestCase
   
   def setup
@@ -23,7 +25,7 @@ class TestChainsParser < Test::Unit::TestCase
       # "Function input does not match output.\n\n#{input}\n\n#{doc.to_s}"
   # end
   
-  def test_indentation
+  def test_device_definition
     input = 
 <<EOS
 vdvTP   = 33000:1:0
@@ -33,8 +35,34 @@ dvTP2   = 10002:1:0
 EOS
     
     doc = @parser.parse(input)
-    assert doc.to_s == input,
-      "Function input does not match output.\n\n#{input}\n\n#{doc.to_s}"
+    
+    count = doc.each_child(Chains::DeviceDefinition).count
+    assert count == 2,
+      "#{count} DeviceDefinition elements. Expected 2 (one is nested)."
+    
+    num = 0
+    doc.each_child(Chains::DeviceDefinition) do |child|
+      num += 1
+      
+      case num
+      when 1
+        # vdvTP
+        assert child.symbol == 'vdvTP'
+        assert child.value == '33000:1:0'
+        
+        assert child.each_child.count == 1
+        
+        nested = child.each_child.first
+        assert nested.symbol == 'dvTP'
+        assert nested.value == '10001:1:0'
+      when 2
+        assert child.symbol == 'dvTP2'
+        assert child.value == '10002:1:0'
+        
+        assert child.each_child.count == 0
+      end
+    end
+    
       
     input2 = 
 <<EOS
@@ -43,17 +71,36 @@ vdvTP   = 33000:1:0
  
   dvTP2   = 10002:1:0
 EOS
-
-    output2 = 
-<<EOS
-vdvTP   = 33000:1:0
-  dvTP  = 10001:1:0
-  dvTP2   = 10002:1:0
-EOS
     
     doc = @parser.parse(input2)
-    assert doc.to_s == output2,
-      "Function input does not match output.\n\n#{input}\n\n#{doc.to_s}"
+    
+    count = doc.each_child(Chains::DeviceDefinition).count
+    assert count == 1,
+      "#{count} DeviceDefinition elements. Expected 1 (two are nested)."
+    
+    doc.each_child(Chains::DeviceDefinition) do |child|
+      # vdvTP
+      assert child.symbol == 'vdvTP'
+      assert child.value == '33000:1:0'
+      
+      assert child.each_child.count == 2
+      
+      num = 0
+      child.each_child do |nested|
+        num += 1
+        
+        assert nested.each_child.count == 0
+        
+        case num
+        when 1
+          assert nested.symbol == 'dvTP'
+          assert nested.value == '10001:1:0'
+        when 2
+          assert nested.symbol == 'dvTP2'
+          assert nested.value == '10002:1:0'
+        end
+      end
+    end
   end
   
   # def test_block_comment

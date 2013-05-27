@@ -125,15 +125,15 @@ module Chains
          
         
         # Check if the line ends with a comment.
-        inlineResult = @inlineCommentRule.parse(line)
-        
-        if inlineResult.is_a? Chains::Comment
-          inlineResult.parent = parent.last
-          @document << inlineResult
-          next
-        elsif inlineResult.is_a? Chains::Verbatim
-          line = inlineResult.text
-        end
+        # inlineResult = @inlineCommentRule.parse(line)
+#         
+        # if inlineResult.is_a? Chains::Comment
+          # inlineResult.parent = parent.last
+          # @document << inlineResult
+          # next
+        # elsif inlineResult.is_a? Chains::Verbatim
+          # line = inlineResult.text
+        # end
         
         # Run line through rules.
         matchedRule = false
@@ -161,9 +161,11 @@ module Chains
         parent.last << e  # Make the element a child of the last parent.
         parent << e       # Push this element onto the parent stack.
         
-        e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
+        #e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
+        
       end
       
+      @document
     end
     
     private
