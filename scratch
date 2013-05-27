@@ -23,3 +23,88 @@ Parser
 	rules
 	
 	
+--------------------------------------------------------------------------------
+
+How indentation affects push/pop.
+
+											parent(p)			indent(i)
+dvTP	= 33000:1:0							p <<
+myFunc ->									p >>, <<
+	ui items[3]								p <<				i <<
+	ui x = 5								p >>, <<
+	
+	for i in items							p >>, <<
+		if x > 0							p <<				i <<
+			doStuff i						p <<				i <<
+			
+			if i == 2						p >>, <<
+				updateTouchPanel			p <<				i <<
+		
+		else -- [sibling]					p >>, >>, <<		i >>, >>
+			doOtherStuff i					p <<				i <<
+		
+		save i								p >>, else>>, if>>, <<		i <<
+
+
+
+
+P is based on I
+Rules change if a sibling element is involved.
+
+i > last
+	p: push
+
+i == last
+	p: pop, push
+
+i < last
+	p: pop
+	p: pop (again) if p is a sibling
+
+
+--------------------------------------------------------------------------------
+
+Handling line rollover.
+
+
+/*	-- (start)
+	Multi-line rollover.
+*/  -- (end)
+singeger myFunc (      -- (start)
+ui a
+ui b	// Single line comment.  -- comment goes in b's comment instance var
+ui c
+) ->                   -- (end) -- function marker has to be on this line
+	doStuff
+
+
+// One line rollover.
+myVar =
+  3
+  
+
+// Nesting a multidimensional array.
+a = {
+	{
+		1
+		2
+		3
+	}
+	{
+		a
+		b
+		c
+	}
+}
+
+
+Nesting:
+What to track?
+
+  - Opening symbol (glyph)
+  - Some kind of buffer.
+     - Nest object?
+       Glyph, line #, line buffer
+       Pused onto nest stack at start glyph
+       Popped at end glyph
+
