@@ -108,22 +108,6 @@ EOS
     end
   end
   
-  # def test_rollover_concatenation
-    # input =
-# <<EOS
-# myVar2 =
-  # 456
-# EOS
-# 
-    # doc = @parser.parse(input)
-#     
-    # assert doc.each_child.count == 1
-    # doc.each_child do |child|
-      # assert child.symbol == 'myVar2'
-      # assert child.value == '456'
-    # end
-  # end
-  
   def test_indent_count
     # Nothing indented.
     r = @parser.send(:indent_count, "test")

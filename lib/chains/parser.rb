@@ -165,6 +165,10 @@ module Chains
     
   end
   
+  
+  # Rollover object should be discarded or cleared
+  # after the 'end_capture?' flag is raised, as it
+  # will not accept additional input.
   class ParserRollover
     attr_accessor :starting_line_number
     
@@ -172,8 +176,8 @@ module Chains
       @beginCapture = false # Flag that line begins rollover capture.
       @endCapture = false   # Flag that line ends rollover capture.
       @isCapturing = false  # Flag that rollover is being captured.
-      
       @rolloverOnce = false # Flag to rollover once and test for rollover again on next line.
+      
       @openingSymbol = nil
       @closingSymbol = nil
       @starting_line_number = 0
@@ -203,10 +207,37 @@ module Chains
     end
     
     def add_line(line)
+      #binding.pry if line == '   123   '
+      
+      if @rolloverOnce
+        # Reset flags.
+        @beginCapture = false
+        @endCapture = true
+        @isCapturing = false
+        @rolloverOnce = false
+      end
+      
+      # Rollover object should be discarded or cleared
+      # after the 'end_capture?' flag is raised, as it
+      # will not accept additional input.
+      if @endCapture && !@rolloverOnce
+        @beginCapture = false
+        @isCapturing = false
+        @rolloverOnce = false
+        return
+      end
+      
       # Check for rollover-once symbols.
       if @rolloverOnceSymbols.include? line.strip[-1]
+        @beginCapture = true
+        @endCapture = false
+        @isCapturing = true
+        @rolloverOnce = true
         
+        @lineBuf << line.strip
       end
+      
+      
       
       # Check for begin rollover symbols.
       # @rolloverOnceSymbols.each do |symbol|
@@ -232,8 +263,24 @@ module Chains
       @isCapturing
     end
     
+    def rollover_once?
+      @rolloverOnce
+    end
+    
     def empty?
       @lineBuf.empty?
+    end
+    
+    def clear
+      @beginCapture = false
+      @endCapture = false
+      @isCapturing = false
+      @rolloverOnce = false
+      
+      @openingSymbol = nil
+      @closingSymbol = nil
+      @starting_line_number = 0
+      @lineBuf = Array.clear
     end
     
     def to_s
