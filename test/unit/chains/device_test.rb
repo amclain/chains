@@ -25,6 +25,22 @@ class TestChainsParser < Test::Unit::TestCase
       # "Function input does not match output.\n\n#{input}\n\n#{doc.to_s}"
   # end
   
+  def test_assignment
+    input = 
+<<EOS
+myVar   = 10
+EOS
+  
+    doc = @parser.parse(input)
+    
+    assert doc.each_child.count  == 1
+    
+    doc.each_child do |child|
+      assert child.symbol = 'myVar'
+      assert child.value = '10'
+    end
+  end
+  
   def test_device_definition
     input = 
 <<EOS
