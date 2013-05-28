@@ -204,7 +204,8 @@ module Chains
   # after the 'end_capture?' flag is raised, as it
   # will not accept additional input.
   class ParserRollover
-    attr_accessor :starting_line_number
+    attr_reader :starting_line_number
+    attr_accessor :line_number
     
     def initialize
       @subrollover = nil    # ParserRollover object to handle nested rollovers.
@@ -219,6 +220,7 @@ module Chains
       @closingSymbol = nil
       @starting_line_number = 0
       @lineBuf = Array.new
+      @line_number = 0
       
       
       # Rollover starts when the line ends with an opening symbol.
@@ -244,6 +246,8 @@ module Chains
     end
     
     def add_line(line)
+      @line_number += 1
+      
       line.strip!
       
       # Strip off comments.
@@ -299,7 +303,7 @@ module Chains
            # due to subrollover capture in progress.
            unless @subrollover
              @subrollover = ParserRollover.new
-             @subrollover.starting_line_number = 0 # TODO: Set this.
+             @subrollover.starting_line_number = @line_number
              @subrollover << line
            end
            
@@ -348,6 +352,11 @@ module Chains
       @lineBuf << line if @isCapturing || @endCapture
     end
     
+    def starting_line_number=(value)
+      @starting_line_number = value
+      @line_number = value
+    end
+    
     def begin_capture?
       @beginCapture
     end
@@ -379,6 +388,7 @@ module Chains
       @openingSymbol = nil
       @closingSymbol = nil
       @starting_line_number = 0
+      @line_number = 0
       @lineBuf.clear
     end
     
