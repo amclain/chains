@@ -24,6 +24,7 @@ module Chains
       
        # For parser.
       @parent = Array.new
+      @sibling = @document
       @indent = Array.new
       @line_number = 0
       
@@ -42,6 +43,8 @@ module Chains
       
       @parent = Array.new    # Push and pop this to track nested statement relationships.
       @parent << @document
+      
+      @sibling = @document
       
       @indent = Array.new    # Push and pop as indentation changes.
       @indent << 0
@@ -64,7 +67,7 @@ module Chains
         
         
         # Check indentation and pop parents accordingly.
-        update_indent line unless inBlockComment
+        update_indent line unless inBlockComment || rollover.capturing?
         
         
         # Check for multiline comment.
@@ -183,6 +186,7 @@ module Chains
       
       # Update indent level.
       this_indent = indent_count line
+      binding.pry if line == '    else'
       
       if this_indent == @indent.last
         @parent.pop unless @parent.last.is_a?(Chains::Document)
@@ -193,17 +197,20 @@ module Chains
         # Element will get pushed when the rules generate one.
         
       elsif this_indent < @indent.last
-        # TODO: POP STUFF until @indent.last == this_indent
+        # TODO: POP STUFF until @indent.last == this_indent ???
         
         @parent.pop unless @parent.last.is_a?(Chains::Document)
-        @parent.pop unless @parent.last.is_a?(Chains::Document)
         
-        #@parent.pop if false # TODO: If sibling.
+        # Pop previous parent if this element is a sibling,
+        # like an ELSE following an IF.
+        @parent.pop if @parent.count >= 2 &&
+          @parent[-2].is_sibling?(@parent.last)
+          
+        @parent.pop unless @parent.last.is_a?(Chains::Document)
         
         @indent.pop unless @indent.last == 0
         @indent.pop unless @indent.last == 0
       end
-      
     end
     
   end

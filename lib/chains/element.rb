@@ -46,6 +46,14 @@ module Chains
       !@siblings.empty?
     end
     
+    def is_child?(e)
+      @children.include? e
+    end
+    
+    def is_sibling?(e)
+      @siblings.include? e
+    end
+    
     def each_child(element_class = nil, &block)
       if element_class
         r = @children.select {|e| e.is_a? element_class}.each(&block)
