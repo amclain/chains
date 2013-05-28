@@ -211,7 +211,13 @@ module Chains
     
     def add_line(line)
       line.strip!
-      #binding.pry if line == ') -> doStuff'
+      
+      # Strip off comments.
+      commentPos = line =~ %r{\/\/}
+      line = line[0,commentPos].strip if commentPos
+      
+      # Strip off commas. They will be added back when the rollover is assembled.
+      line.chop! if line[-1] == ','
       
       # Reset flags.
       @beginCapture = false

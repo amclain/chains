@@ -26,10 +26,10 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert @rollover.rollover_once? == false
     assert @rollover.starting_line_number == 1
     
-    # Returns correct output.
     s = @rollover.to_s
     assert s == 'myVar2 = 123',
       "Output: #{s}"
+    
     
     # Rollover doesn't accept additional input after
     # 'end_capture?' flag is raised.
@@ -39,6 +39,7 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert @rollover.capturing? == false
     assert @rollover.rollover_once? == false
     
+    
     # Clear rollover.
     @rollover.clear
     assert @rollover.begin_capture? == false
@@ -46,6 +47,7 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert @rollover.capturing? == false
     assert @rollover.rollover_once? == false
     assert @rollover.to_s == ''
+    
     
     # Separated function parameters.
     @rollover << 'myFunction ('
@@ -66,6 +68,7 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert s == 'myFunction (ui a, ui b, ui c) -> doStuff',
       "Output: #{s}"
     
+    
     # Multi-line with single rollover nested.
     @rollover.clear
     @rollover << 'a = {'
@@ -76,6 +79,7 @@ class TestChainsParserRollover < Test::Unit::TestCase
     s = @rollover.to_s
     assert s == 'a = {1 + 2}',
       "Output: #{s}"
+    
     
     # Nested rollovers.
     # a = {
@@ -105,6 +109,31 @@ class TestChainsParserRollover < Test::Unit::TestCase
     
     s = @rollover.to_s
     assert s == 'a = {{1, 2, 3}, {a, b, c}}',
+      "Output: #{s}"
+      
+      
+    # Strip out comments from rollovers.
+    @rollover.clear
+    
+    @rollover << 'a = {'
+    @rollover << '  1'
+    @rollover << '  2 // Strip this comment off.'
+    @rollover << '}'
+    
+    s = @rollover.to_s
+    assert s == 'a = {1, 2}',
+      "Output: #{s}"
+    
+    # Remove redundant commas.
+    @rollover.clear
+    
+    @rollover << 'a = {'
+    @rollover << '  1,'
+    @rollover << '  2,'
+    @rollover << '}'
+    
+    s = @rollover.to_s
+    assert s == 'a = {1, 2}',
       "Output: #{s}"
   end
 end
