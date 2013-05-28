@@ -38,15 +38,15 @@ module Chains
       
       parent = Array.new    # Push and pop this to track nested statement relationships.
       parent << @document
+      
+      indent = Array.new    # Push and pop as indentation changes.
+      indent << 0
 
       stack = Array.new     # Push and pop elements being created.
       
-      rollover = Array.new  # Push and pop to track nested rollover.
-      rollover << ParserRollover.new
+      rollover = ParserRollover.new
       
       lineNum = 0
-      indent = 0
-      lastIndent = 0
       
       inBlockComment = false
       
@@ -57,24 +57,44 @@ module Chains
         # Skip empty lines.
         next if line.strip.empty? && !inBlockComment
         
-        # Check for line rollover.
         
         
         
-        
-        #unless inBlockComment || lineRollover
-          # Update indent level.
-          lastIndent = indent
-          indent = indent_count line
+        unless inBlockComment
+          # Parent (p) is based on Indentation (i)
+          #
+          # i > last
+          #   p: push
+          #
+          # i == last
+          #   p: pop, push
+          #
+          # i < last
+          #   p: pop
+          #   p: pop (again) if p is a sibling
           
-          # When indentation moves right, push a parent.
-          # When indentation moves left, pop a parent.
+          
+          # Update indent level.
+          this_indent = indent_count line
+          
+          if    this_indent == indent.last
+            parent.pop
+            # Element will get pushed when the rules generate one.
+            
+          elsif this_indent > indent.last
+            # Element will get pushed when the rules generate one.
+            
+          elsif this_indent < indent.last
+            parent.pop
+            parent.pop if false # TODO: If sibling.
+            
+          end
           
           # Pop the element from the last loop.
           parent.pop if indent <= lastIndent && !parent.last.is_a?(Chains::Document)
           # Pop the parent that's now out of scope from deindenting.
           parent.pop if indent < lastIndent && !parent.last.is_a?(Chains::Document)
-        #end
+        end
         
         
         # Check for multiline comment.
@@ -98,9 +118,6 @@ module Chains
         # end
         
         
-        
-         
-        
         # Check if the line ends with a comment.
         # inlineResult = @inlineCommentRule.parse(line)
 #         
@@ -111,6 +128,23 @@ module Chains
         # elsif inlineResult.is_a? Chains::Verbatim
           # line = inlineResult.text
         # end
+        
+        
+        # Check for line rollover.
+        rollover << line
+        rollover.starting_line_number = lineNum
+        
+        if rollover.capturing?
+          # TODO: Handle captured comments here
+          #       or else the rollover throws them away.
+          return
+        end
+        
+        if rollover.end_capture?
+          line = rollover.to_s
+          rollover.clear
+        end
+        
         
         # Run line through rules.
         matchedRule = false
@@ -335,6 +369,8 @@ module Chains
     end
     
     def clear
+      @subrollover = nil
+      
       @beginCapture = false
       @endCapture = false
       @isCapturing = false
@@ -418,38 +454,3 @@ module Chains
     
   end
 end
-
-
-
-=begin
-f.read.each_line do |line|
-  next if line.empty?
-  
-  # Track indentation.
-  lastIndent = indent
-  indentArray = line.scan(/([\t ]*).*/).first
-  indent = indentArray.first.length if indentArray
-  
-  # Assignment
-  # (\w+)\s*=\s*(\S+)*
-  
-  # Device definition.
-  # This is a type of assignment.
-  # (dvTP = 10001:1:0)
-  line.strip.scan(/(\w+)\s*=\s*(\d{1,5}):?(\d{0,5}):?(\d{0,5})/).
-    collect do |symbol, device, port, system|
-      break if port.empty? || system.empty?
-      
-      section = :deviceDefinition
-      device = NetLinx::Device.new(symbol, device, port, system)
-      doc[:devices] << device
-      parent[indent] = device
-      
-      doc[:start] << NetLinx::Statement.new("combine_devices(#{parent[0].symbol}, #{symbol})") if parent.count > 1
-    end
-    
-  
-end
-
-puts doc
-=end

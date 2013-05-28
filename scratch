@@ -6,10 +6,6 @@ Parser
 	check for empty lines (except in block comments)
 	
 	
-	concatinate rolled-over lines
-		indentation doesn't matter
-		
-	
 	check for indentation
 	
 	
@@ -19,6 +15,11 @@ Parser
 	
 	check for single line comment   <-- can do easier with a string split than regex
 	
+	
+	concatinate rolled-over lines
+		indentation doesn't matter
+		... until it's time to attach the concatenated lines to a parent!
+		
 	
 	rules
 	
