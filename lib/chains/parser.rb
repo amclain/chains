@@ -11,6 +11,7 @@ require "#{$lib}/chains/verbatim"
 module Chains
   class Parser
     attr_reader :document
+    attr_reader :line_number
     
     def initialize(input = nil)
       @document = Chains::Document.new
@@ -19,9 +20,12 @@ module Chains
       @rules = Chains::StandardRules.new
       
       @commentOpeningSymbols = ['(*', '(^', '(!', '/*', '/^']
-      @commentClosingSymbols   = ['*)', '^)', '!)', '*/', '^/']
+      @commentClosingSymbols = ['*)', '^)', '!)', '*/', '^/']
       
-       
+       # For parser.
+      @parent = Array.new
+      @indent = Array.new
+      @line_number = 0
       
       
       parse input if input
@@ -36,65 +40,31 @@ module Chains
       # TODO: For now we don't care. Assume input string for testing.
       
       
-      parent = Array.new    # Push and pop this to track nested statement relationships.
-      parent << @document
+      @parent = Array.new    # Push and pop this to track nested statement relationships.
+      @parent << @document
       
-      indent = Array.new    # Push and pop as indentation changes.
-      indent << 0
+      @indent = Array.new    # Push and pop as indentation changes.
+      @indent << 0
+      
+      @line_number = 0
 
-      stack = Array.new     # Push and pop elements being created.
-      
       rollover = ParserRollover.new
       
-      lineNum = 0
+      stack = Array.new     # Push and pop elements being created.
       
       inBlockComment = false
       
       
+      
       input.each_line do |line|
-        lineNum += 1
+        @line_number += 1
         
         # Skip empty lines.
         next if line.strip.empty? && !inBlockComment
         
         
-        
-        
-        unless inBlockComment
-          # Parent (p) is based on Indentation (i)
-          #
-          # i > last
-          #   p: push
-          #
-          # i == last
-          #   p: pop, push
-          #
-          # i < last
-          #   p: pop
-          #   p: pop (again) if p is a sibling
-          
-          
-          # Update indent level.
-          this_indent = indent_count line
-          
-          if    this_indent == indent.last
-            parent.pop
-            # Element will get pushed when the rules generate one.
-            
-          elsif this_indent > indent.last
-            # Element will get pushed when the rules generate one.
-            
-          elsif this_indent < indent.last
-            parent.pop
-            parent.pop if false # TODO: If sibling.
-            
-          end
-          
-          # Pop the element from the last loop.
-          parent.pop if indent <= lastIndent && !parent.last.is_a?(Chains::Document)
-          # Pop the parent that's now out of scope from deindenting.
-          parent.pop if indent < lastIndent && !parent.last.is_a?(Chains::Document)
-        end
+        # Check indentation and pop parents accordingly.
+        update_indent line unless inBlockComment
         
         
         # Check for multiline comment.
@@ -195,6 +165,45 @@ module Chains
       end
       
       indent
+    end
+    
+    def update_indent(line)
+      # Parent (p) is based on Indentation (i)
+      #
+      # i > last
+      #   p: push
+      #
+      # i == last
+      #   p: pop, push
+      #
+      # i < last
+      #   p: pop
+      #   p: pop (again) if p is a sibling
+      
+      
+      # Update indent level.
+      this_indent = indent_count line
+      
+      if this_indent == @indent.last
+        @parent.pop unless @parent.last.is_a?(Chains::Document)
+        # Element will get pushed when the rules generate one.
+        
+      elsif this_indent > @indent.last
+        @indent << this_indent
+        # Element will get pushed when the rules generate one.
+        
+      elsif this_indent < @indent.last
+        # TODO: POP STUFF until @indent.last == this_indent
+        
+        @parent.pop unless @parent.last.is_a?(Chains::Document)
+        @parent.pop unless @parent.last.is_a?(Chains::Document)
+        
+        #@parent.pop if false # TODO: If sibling.
+        
+        @indent.pop unless @indent.last == 0
+        @indent.pop unless @indent.last == 0
+      end
+      
     end
     
   end
