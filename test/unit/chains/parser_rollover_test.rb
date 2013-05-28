@@ -66,6 +66,45 @@ class TestChainsParserRollover < Test::Unit::TestCase
     assert s == 'myFunction (ui a, ui b, ui c) -> doStuff',
       "Output: #{s}"
     
-    # Nested array.
+    # Multi-line with single rollover nested.
+    @rollover.clear
+    @rollover << 'a = {'
+    @rollover << '  1 +'
+    @rollover << '  2'
+    @rollover << '}'
+    
+    s = @rollover.to_s
+    assert s == 'a = {1 + 2}',
+      "Output: #{s}"
+    
+    # Nested rollovers.
+    # a = {
+    #   {
+    #     1...
+    #   {
+    #     a...
+    # }
+    @rollover.clear
+    
+    @rollover << 'a = {'
+    assert @rollover.begin_capture?
+    @rollover << '  {'
+    @rollover << '    1'
+    @rollover << '    2'
+    @rollover << '    3'
+    @rollover << '  }'
+    assert @rollover.end_capture? == false # Shouldn't end inside the nested rollover.
+    assert @rollover.capturing?
+    @rollover << '  {'
+    @rollover << '    a'
+    @rollover << '    b'
+    @rollover << '    c'
+    @rollover << '  }'
+    @rollover << '}'
+    assert @rollover.end_capture?
+    
+    s = @rollover.to_s
+    assert s == 'a = {{1, 2, 3}, {a, b, c}}',
+      "Output: #{s}"
   end
 end

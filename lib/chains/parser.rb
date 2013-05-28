@@ -173,6 +173,9 @@ module Chains
     attr_accessor :starting_line_number
     
     def initialize
+      @subrollover = nil    # ParserRollover object to handle nested rollovers.
+                            # Nil if no nested items.
+      
       @beginCapture = false # Flag that line begins rollover capture.
       @endCapture = false   # Flag that line ends rollover capture.
       @isCapturing = false  # Flag that rollover is being captured.
@@ -230,6 +233,39 @@ module Chains
         @isCapturing = false
         @rolloverOnce = false
         return
+      end
+      
+      # If in a subrollover, delegate to that subrollover.
+      if @subrollover
+        @subrollover << line if @subrollover.capturing?
+        
+        if @subrollover.end_capture?
+           # Extract the subrollover's data to the line buffer
+           # and destroy the subrollover.
+           @lineBuf << @subrollover.to_s
+           @subrollover = nil
+           return
+         else
+           # Subrollover is still capturing data.
+           return
+         end
+      end
+      
+      # Parser is already in a rollover.
+      # Start up a sub-rollover helper.
+      if (@rolloverOnce || @openingSymbol) &&
+         (will_rollover_once?(line) || will_rollover_many?(line))
+           # Create a new subrollover unless one already exists
+           # due to subrollover capture in progress.
+           unless @subrollover
+             @subrollover = ParserRollover.new
+             @subrollover.starting_line_number = 0 # TODO: Set this.
+             @subrollover << line
+           end
+           
+           # Let sub-sub-rollover data roll through to the sub-rollover.
+           # If that makes sense...
+           return
       end
       
       # Check for the closing rollover symbol.
