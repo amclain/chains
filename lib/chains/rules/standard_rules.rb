@@ -3,6 +3,7 @@ require "#{$lib}/chains/rules/rules"
 require "#{$lib}/chains/rules/assignment_rule"
 require "#{$lib}/chains/rules/comment_rule"
 require "#{$lib}/chains/rules/device_definition_rule"
+require "#{$lib}/chains/rules/function_rule"
 
 module Chains
   class StandardRules < Chains::Rules
@@ -14,7 +15,8 @@ module Chains
       @rules = [
         Chains::CommentRule.new,
         Chains::DeviceDefinitionRule.new,
-        Chains::AssignmentRule.new
+        Chains::AssignmentRule.new,
+        Chains::FunctionRule.new
       ]
     end
     

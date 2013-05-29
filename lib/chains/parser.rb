@@ -19,8 +19,8 @@ module Chains
       @inlineCommentRule = Chains::InlineCommentRule.new
       @rules = Chains::StandardRules.new
       
-      @commentOpeningSymbols = ['(*', '(^', '(!', '/*', '/^']
-      @commentClosingSymbols = ['*)', '^)', '!)', '*/', '^/']
+      @commentOpeningSymbols = ['(*', '(^', '(!', '/*', '/^', '/!']
+      @commentClosingSymbols = ['*)', '^)', '!)', '*/', '^/', '!/']
       
        # For parser.
       @parent = Array.new
