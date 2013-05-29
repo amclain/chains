@@ -170,6 +170,17 @@ module Chains
       indent
     end
     
+    # Returns 0 if the new indentation is equal to the last
+    # indentation. (Indentation level didn't change.)
+    #
+    # Returns +n number of indent levels if the new indentation
+    # is greater than the last indentation. (Entered new level.)
+    # Will always return +1 because you can only move one level
+    # in at a time.
+    #
+    # Returns -n number of outdent levels if the new indentation
+    # level is less than the last indentation. (Exited one or more
+    # levels.)
     def update_indent(line)
       # Parent (p) is based on Indentation (i)
       #
@@ -186,30 +197,23 @@ module Chains
       
       # Update indent level.
       this_indent = indent_count line
-      binding.pry if line == '    else'
       
       if this_indent == @indent.last
-        @parent.pop unless @parent.last.is_a?(Chains::Document)
-        # Element will get pushed when the rules generate one.
+        return 0
         
       elsif this_indent > @indent.last
         @indent << this_indent
-        # Element will get pushed when the rules generate one.
+        return 1
         
       elsif this_indent < @indent.last
-        # TODO: POP STUFF until @indent.last == this_indent ???
+        popped = 0
         
-        @parent.pop unless @parent.last.is_a?(Chains::Document)
+        until @indent.last == this_indent
+          @indent.pop
+          popped -= 1
+        end
         
-        # Pop previous parent if this element is a sibling,
-        # like an ELSE following an IF.
-        @parent.pop if @parent.count >= 2 &&
-          @parent[-2].is_sibling?(@parent.last)
-          
-        @parent.pop unless @parent.last.is_a?(Chains::Document)
-        
-        @indent.pop unless @indent.last == 0
-        @indent.pop unless @indent.last == 0
+        return popped
       end
     end
     
