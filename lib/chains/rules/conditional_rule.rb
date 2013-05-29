@@ -44,7 +44,7 @@ module Chains
       
       
       if elementType == 'when'
-        e = Chains::Conditional.new(elementType, line[5, -1])
+        e = Chains::Conditional.new(elementType, line[5, line.length])
         @element = e unless e.empty?
         
       elsif elementType == 'else'
@@ -52,7 +52,7 @@ module Chains
         @element = e unless e.empty?
         
       else
-        e = Chains::Conditional.new(elementType, line[elementType.length + 1, -1])
+        e = Chains::Conditional.new(elementType, line[elementType.length, line.length])
         @element = e unless e.empty?
         
       end

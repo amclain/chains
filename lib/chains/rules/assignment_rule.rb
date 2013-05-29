@@ -14,6 +14,8 @@ module Chains
     def parse(line)
       @element = nil
       
+      # TODO: Revise assignment regex.
+      
       line.scan(/\s*(\w*)\s*=\s*(.*)/).
         collect do |symbol, value|
           e = Chains::Assignment.new(symbol, value)

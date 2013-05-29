@@ -42,8 +42,13 @@ module Chains
         # WHILE
         out += "#{hash[:condition]}"
       end
-       
+      
       out += ' ' + @comment.to_s if @comment
+      out += "\n"
+      
+      @children.each {|child| out += "\t#{child.to_s}"}
+      @siblings.each {|sibling| out += "#{sibling.to_s}"}
+      
       out += "\n"
       out
     end

@@ -25,8 +25,9 @@ module Chains
       out += " #{params}" if @params
       out += " ->" 
       out += ' ' + @comment.to_s if @comment
+      out += "\n"
       
-      @children.each {|child| out += "#{child.to_s}"}
+      @children.each {|child| out += "\t#{child.to_s}"}
       @siblings.each {|sibling| out += "#{sibling.to_s}"}
       
       out += "\n"

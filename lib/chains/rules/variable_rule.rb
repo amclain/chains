@@ -54,6 +54,16 @@ module Chains
       
       line.scan(/\s*(\w+)\s+(\w+)(\[\d+\])*(?:\s*=\s*(\w+))?/).
         collect do |type, symbol, size, value|
+          if size.class == Array
+            size.each do |s|
+              s.delete! '['
+              s.delete! ']'
+            end
+          elsif size.class == String
+            size.delete! '['
+            size.delete! ']'
+          end
+          
           e = Chains::Variable.new(symbol, type, value, size)
           @element = e unless e.empty?
       end

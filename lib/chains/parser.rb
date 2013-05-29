@@ -6,6 +6,7 @@ require "#{$lib}/chains/rules/standard_rules"
 require "#{$lib}/chains/rules/inline_comment_rule"
 
 require "#{$lib}/chains/comment"
+require "#{$lib}/chains/conditional"
 require "#{$lib}/chains/verbatim"
 
 module Chains
@@ -123,6 +124,12 @@ module Chains
         end
         
         
+        #-------------------------------------------------------
+        # TODO: Subclass rules so they have access to the parser
+        #       instance variables, like document and symbols.
+        #-------------------------------------------------------
+        
+        
         # Run line through rules.
         matchedRule = false
         @rules.each do |rule|
@@ -143,6 +150,36 @@ module Chains
         end
         
         
+        
+        binding.pry if @parent.last.class == Assignment
+        
+        
+        
+        # TODO: Shuffle parents based on indentation here.
+        if indentResult == 1
+          # Don't need to pop; line was indented.
+          
+        elsif indentResult == 0
+          # Pop one element off if it's not a sibling.
+          if @parent.last.class == Chains::Conditional &&
+            @parent.last.type.to_s == 'if' &&
+            stack.last.class == Chains::Conditional &&
+            (
+              stack.last.type.to_s == 'else if' ||
+              stack.last.type.to_s == 'else'
+            )
+          else
+            @parent.pop unless @parent.last == @document
+          end
+          
+        else
+          # Pop n elements off based on outdent.
+          # Watch for siblings.
+          
+        end
+        
+        
+        
         # Grab the parsed element to work with.
         e = stack.pop
         
@@ -154,20 +191,6 @@ module Chains
         @parent << e       # Push this element onto the parent stack.
         
         
-        
-        
-        # TODO: Shuffle parents based on indentation here.
-        if indentResult == 1
-          # Don't need to pop; line was indented.
-          
-        elsif indentResult == 0
-          # Pop one element off if it's not a sibling.
-          
-        else
-          # Pop n elements off based on outdent.
-          # Watch for siblings.
-          
-        end
         
       end
       
