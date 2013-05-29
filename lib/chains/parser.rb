@@ -55,6 +55,7 @@ module Chains
       
       inBlockComment = false
       commentBuf = ''
+      commentClosingSymbol = nil # If in a comment, tracks the closing symbol to watch for.
       
       
       
@@ -74,19 +75,26 @@ module Chains
         
         # Check for multiline comment.
         # Ends with '*/' or '*)'. Possibly on another line.
-        inBlockComment = true if line.strip.start_with? *@commentOpeningSymbols
+        @commentOpeningSymbols.each do |symbol|
+          if line.strip.start_with? symbol
+            inBlockComment = true
+            commentClosingSymbol = @commentClosingSymbols[@commentOpeningSymbols.index(symbol)]
+            break 
+          end
+        end
         
         commentBuf += line.delete("\r").delete("\n") + "\n"
         
         if inBlockComment
           # Look for closing tag.
-          inBlockComment = false if line.strip.end_with? *@commentClosingSymbols
+          inBlockComment = false if line.strip.end_with? commentClosingSymbol
           
           unless inBlockComment
             e = Chains::Comment.new commentBuf
             e.parent = @parent.last
             @parent.last << e
             commentBuf = ''
+            closingSymbol = nil
           end 
           
           next # Skip to next line.
