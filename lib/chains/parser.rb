@@ -44,8 +44,6 @@ module Chains
       @parent = Array.new    # Push and pop this to track nested statement relationships.
       @parent << @document
       
-      @sibling = @document
-      
       @indent = Array.new    # Push and pop as indentation changes.
       @indent << 0
       
@@ -56,6 +54,7 @@ module Chains
       stack = Array.new     # Push and pop elements being created.
       
       inBlockComment = false
+      commentBuf = ''
       
       
       
@@ -67,51 +66,48 @@ module Chains
         
         
         # Check indentation and pop parents accordingly.
-        update_indent line unless inBlockComment || rollover.capturing?
+        indentResult = update_indent line unless inBlockComment || rollover.capturing?
+        
+        
+        # TODO: Handle indent result here?
         
         
         # Check for multiline comment.
         # Ends with '*/' or '*)'. Possibly on another line.
-        # inBlockComment = true if line.strip.start_with? *@commentStartingSymbols
-#         
-        # lineBuf += line.delete("\r").delete("\n") + "\n"
-#         
-        # if inBlockComment
-          # # Look for closing tag.
-          # inBlockComment = false if line.strip.end_with? *@commentEndingSymbols
-#           
-          # unless inBlockComment
-            # e = Chains::Comment.new(parent.last, lineBuf)
-            # e.parent = parent.last
-            # parent.last << e
-            # lineBuf = ''
-          # end 
-#           
-          # next # Skip to next line.
-        # end
+        inBlockComment = true if line.strip.start_with? *@commentOpeningSymbols
+        
+        commentBuf += line.delete("\r").delete("\n") + "\n"
+        
+        if inBlockComment
+          # Look for closing tag.
+          inBlockComment = false if line.strip.end_with? *@commentClosingSymbols
+          
+          unless inBlockComment
+            e = Chains::Comment.new(@parent.last, commentBuf)
+            e.parent = @parent.last
+            @parent.last << e
+            commentBuf = ''
+          end 
+          
+          next # Skip to next line.
+        end
         
         
         # Check if the line ends with a comment.
-        # inlineResult = @inlineCommentRule.parse(line)
-#         
-        # if inlineResult.is_a? Chains::Comment
-          # inlineResult.parent = parent.last
-          # @document << inlineResult
-          # next
-        # elsif inlineResult.is_a? Chains::Verbatim
-          # line = inlineResult.text
-        # end
+        inlineResult = @inlineCommentRule.parse(line)
+        
+        if inlineResult.is_a? Chains::Comment
+          inlineResult.parent = @parent.last
+          stack << inlineResult # TODO: Append this back on after RULES ###############
+          next
+        elsif inlineResult.is_a? Chains::Verbatim
+          line = inlineResult.text
+        end
         
         
         # Check for line rollover.
         rollover << line
-        rollover.starting_line_number = lineNum
-        
-        if rollover.capturing?
-          # TODO: Handle captured comments here
-          #       or else the rollover throws them away.
-          return
-        end
+        rollover.starting_line_number = @line_number
         
         if rollover.end_capture?
           line = rollover.to_s
@@ -133,7 +129,7 @@ module Chains
         unless matchedRule
           # TODO: Raise exception.
           #binding.pry
-          puts "SYNTAX ERROR line #{lineNum}:\n#{line}"
+          puts "SYNTAX ERROR line #{@line_number}:\n#{line}"
           @document = nil
           return
         end
@@ -141,9 +137,9 @@ module Chains
         
         # Grab the parsed element to work with.
         e = stack.pop
-        e.parent = parent.last
-        parent.last << e  # Make the element a child of the last parent.
-        parent << e       # Push this element onto the parent stack.
+        e.parent = @parent.last
+        @parent.last << e  # Make the element a child of the last parent.
+        @parent << e       # Push this element onto the parent stack.
         
         #e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
         
