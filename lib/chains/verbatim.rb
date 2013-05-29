@@ -9,6 +9,10 @@ module Chains
       @text = text
     end
     
+    def empty?
+      @text.nil? || @text.empty?
+    end
+    
     def to_s
       out  = ''
       out += @text if @text

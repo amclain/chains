@@ -126,7 +126,7 @@ module Chains
         # Run line through rules.
         matchedRule = false
         @rules.each do |rule|
-          result = rule.parse(line)
+          result = rule.parse(line.strip)
           next unless result
           
           matchedRule = true
