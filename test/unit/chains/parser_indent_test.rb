@@ -28,14 +28,14 @@ class TestChainsParserIndentation < Test::Unit::TestCase
   
   # Helper
   def make_line(text)
-    @lines << Chains::Verbatim.new(nil, text)
+    @lines << Chains::Verbatim.new(text)
     update_indent @lines.last.to_s
   end
   
   
   def test_no_change
-    line1 = Chains::Assignment.new(nil, 'myVar', '1')
-    line2 = Chains::Assignment.new(nil, 'myVar', '2')
+    line1 = Chains::Assignment.new('myVar', '1')
+    line2 = Chains::Assignment.new('myVar', '2')
     
     update_indent line1.to_s
     assert @indent.count == 1
@@ -48,8 +48,8 @@ class TestChainsParserIndentation < Test::Unit::TestCase
   
   def test_in_out_one_level
     # In one level.
-    line1 = Chains::Verbatim.new(nil, 'if x > 0')
-    line2 = Chains::Verbatim.new(nil, '  doStuff')
+    line1 = Chains::Verbatim.new('if x > 0')
+    line2 = Chains::Verbatim.new('  doStuff')
     
     update_indent line1.to_s
     
@@ -59,13 +59,13 @@ class TestChainsParserIndentation < Test::Unit::TestCase
     
     
     # Stay on level.
-    line3 = Chains::Verbatim.new(nil, '  a = 1')
+    line3 = Chains::Verbatim.new('  a = 1')
     update_indent line3.to_s
     assert @indent.count == 2 # 0, 2
     assert @indent.last == 2
     
     # Out one level.
-    line4 = Chains::Verbatim.new(nil, 'x = 0')
+    line4 = Chains::Verbatim.new('x = 0')
     update_indent line4.to_s
     
     assert @indent.count == 1

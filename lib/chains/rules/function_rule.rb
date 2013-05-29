@@ -18,8 +18,7 @@ module Chains
       # [type] [symbol] ([params]) -> [statement]
       line.scan(/\s*(\w+(?:\s+))?(\w+)\s*(\(.*\))?\s*\-\>\s*(.*)?/).
         collect do |type, symbol, params, statement|
-          binding.pry
-          e = Chains::Function.new(nil, symbol, params, type)
+          e = Chains::Function.new(symbol, params, type)
           @element = e unless e.empty?
       end
       

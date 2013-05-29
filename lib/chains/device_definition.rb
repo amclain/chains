@@ -6,8 +6,8 @@ module Chains
     attr_accessor :value
     attr_accessor :filePath
     
-    def initialize(parent, symbol, value, filePath = nil)
-      super parent
+    def initialize(symbol, value, filePath = nil)
+      super()
       
       @symbol = symbol
       @value = value

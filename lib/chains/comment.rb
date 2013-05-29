@@ -9,8 +9,8 @@ module Chains
     attr_accessor :type
     attr_reader :text
     
-    def initialize(parent, text = nil)
-      super parent
+    def initialize(text = nil)
+      super()
       self.text = text
     end
     

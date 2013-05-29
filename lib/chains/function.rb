@@ -6,8 +6,8 @@ module Chains
     attr_accessor :params
     attr_accessor :type
     
-    def initialize(parent, symbol, params = nil, type = nil)
-      super parent
+    def initialize(symbol, params = nil, type = nil)
+      super()
       
       @symbol = symbol
       @params = params
@@ -20,7 +20,10 @@ module Chains
     
     def to_s
       out  = ''
-      out += "#{@symbol} = #{value}" 
+      out += "#{type} " if @type
+      out += "#{@symbol}"
+      out += " #{params}" if @params
+      out += " ->" 
       out += ' ' + @comment.to_s if @comment
       out += "\n"
       out

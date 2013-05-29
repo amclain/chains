@@ -5,8 +5,8 @@ module Chains
     attr_accessor :symbol
     attr_accessor :value
     
-    def initialize(parent, symbol, value)
-      super parent
+    def initialize(symbol, value)
+      super()
       
       @symbol = symbol
       @value = value

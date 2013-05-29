@@ -17,8 +17,8 @@ module Chains
       
       # Separate out single line comments after statement.
       line.scan(/(.*)\s*(\/\/\^?.*)/).collect do |statement, comment|
-        @stack << Chains::Comment.new(nil, comment.strip)
-        @stack << Chains::Verbatim.new(nil, statement.rstrip) if statement && !statement.empty?
+        @stack << Chains::Comment.new(comment.strip)
+        @stack << Chains::Verbatim.new(statement.rstrip) if statement && !statement.empty?
       end
       
       @element = @stack.pop

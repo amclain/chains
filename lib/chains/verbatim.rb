@@ -4,8 +4,8 @@ module Chains
   class Verbatim < Chains::Element
     attr_accessor :text
     
-    def initialize(parent, text = nil)
-      super parent
+    def initialize(text = nil)
+      super()
       @text = text
     end
     

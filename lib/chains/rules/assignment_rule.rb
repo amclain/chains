@@ -16,7 +16,7 @@ module Chains
       
       line.scan(/\s*(\w*)\s*=\s*(.*)/).
         collect do |symbol, value|
-          e = Chains::Assignment.new(nil, symbol, value)
+          e = Chains::Assignment.new(symbol, value)
           @element = e unless e.empty?
       end
       

@@ -17,7 +17,7 @@ module Chains
       line.scan(/\s*(\w*)\s*=\s*(\d{1,5}:\d{1,5}:\d{1,5})\s*(.*)/).
         collect do |symbol, value, filePath|
           filePath = nil if filePath.empty?
-          e = Chains::DeviceDefinition.new(nil, symbol, value, filePath)
+          e = Chains::DeviceDefinition.new(symbol, value, filePath)
           @element = e unless e.empty?
       end
       

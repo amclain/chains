@@ -83,7 +83,7 @@ module Chains
           inBlockComment = false if line.strip.end_with? *@commentClosingSymbols
           
           unless inBlockComment
-            e = Chains::Comment.new(@parent.last, commentBuf)
+            e = Chains::Comment.new commentBuf
             e.parent = @parent.last
             @parent.last << e
             commentBuf = ''

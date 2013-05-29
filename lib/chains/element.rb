@@ -5,8 +5,8 @@ module Chains
     attr_accessor :siblings
     attr_accessor :comment
     
-    def initialize(parent = nil)
-      @parent = parent
+    def initialize
+      @parent = nil
       @children = Array.new
       @siblings = Array.new
       @comment = nil
