@@ -106,7 +106,7 @@ module Chains
         
         if inlineResult.is_a? Chains::Comment
           inlineResult.parent = @parent.last
-          stack << inlineResult # TODO: Append this back on after RULES ###############
+          @parent << inlineResult
           next
         elsif inlineResult.is_a? Chains::Verbatim
           line = inlineResult.text
@@ -145,11 +145,29 @@ module Chains
         
         # Grab the parsed element to work with.
         e = stack.pop
+        
+        # Check if next elemet on the stack is a comment that attaches to e.
+        e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
+        
         e.parent = @parent.last
         @parent.last << e  # Make the element a child of the last parent.
         @parent << e       # Push this element onto the parent stack.
         
-        #e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
+        
+        
+        
+        # TODO: Shuffle parents based on indentation here.
+        if indentResult == 1
+          # Don't need to pop; line was indented.
+          
+        elsif indentResult == 0
+          # Pop one element off if it's not a sibling.
+          
+        else
+          # Pop n elements off based on outdent.
+          # Watch for siblings.
+          
+        end
         
       end
       
