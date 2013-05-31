@@ -121,7 +121,7 @@ module Chains
           "Column: #{ttparser.failure_column}\n\n" +
           "OUTPUT:\n\n"
         
-        fail = ttparser.failure_line
+        fail = ttparser.failure_line - 1
         start = fail - 5
         stop = fail + 5
         
