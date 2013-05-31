@@ -110,6 +110,10 @@ module Chains
       end # End .each_line
       
       
+      # ------------------------------------------------------------------
+      # TODO: Check for bad indents before sending document to the parser.
+      # ------------------------------------------------------------------
+      
       tree = ttparser.parse(out)
       #binding.pry
       

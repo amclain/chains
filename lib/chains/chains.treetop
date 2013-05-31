@@ -80,13 +80,13 @@ grammar Chains
 			/
 			# Code indents to a nested set.
 			(
-				space? indent space?
+				indent
 				(
 					# Things that can be done inside a function.
 					variable_definition / assignment
 					# conditional / loop
 				)
-				space? outdent space?
+				outdent
 			)*
 		)?
 		<FunctionDefinition>
@@ -108,9 +108,9 @@ grammar Chains
 	
 	rule device_combine
 		device_definition
-		space? indent
+		indent
 			(space? device_definition space?)+
-		outdent space?
+		outdent
 		<DeviceCombine>
 	end
 
@@ -135,9 +135,9 @@ grammar Chains
 
 	rule structure_definition
 		user_symbol ':'
-		space? indent
+		indent
 		(space? variable_type space user_symbol space?)*
-		space? outdent
+		outdent
 		<StructureDefinition>
 	end
 
@@ -174,12 +174,12 @@ grammar Chains
 
 	rule indent
 		# Indent symbol defined by the preformatter.
-		'~@(INDENT)@~' <Indent>
+		space? '~@(INDENT)@~' space? <Indent>
 	end
 
 	rule outdent
 		# Outdent symbol defined by the preformatter.
-		'~@(OUTDENT)@~' <Outdent>
+		space? '~@(OUTDENT)@~' space? <Outdent>
 	end
 
 	rule variable_type
