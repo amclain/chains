@@ -11,6 +11,7 @@ grammar Chains
 			program_name /
 			include_directive /
 			event_definition / function_definition / 
+			device_combine /
 			device_definition / constant_definition /
 			structure_definition / variable_definition 
 		)
@@ -106,7 +107,11 @@ grammar Chains
 	end
 	
 	rule device_combine
-		indent space? device_definition space? outdent <DeviceCombine>
+		device_definition
+		space? indent
+			(space? device_definition space?)+
+		outdent space?
+		<DeviceCombine>
 	end
 
 	rule dps

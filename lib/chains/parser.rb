@@ -101,8 +101,10 @@ module Chains
         else
           # Indentation shifted left one or more times.
           # Add one or more flags.
+          
+          # Put the outdent flag on the previous line and add the LF back in.
+          1.upto(indentResult.abs) {out = out.chop + @outdentFlag + "\n"}
           out += "#{line}"
-          1.upto(indentResult.abs) {out += @outdentFlag}
         end
         
       end # End .each_line
@@ -127,7 +129,8 @@ module Chains
           msg += (i == fail) ? ' => ' : '    '
           # TODO: Delete indentation flags.
           msg += "%03d: #{out.lines[i].chop.
-            gsub(@indentFlag, '').gsub(@outdentFlag, '')}\n" % (i + 1)
+            gsub(@indentFlag, '').gsub(@outdentFlag, '')
+            }\n" % (i + 1)
         end
         
         msg += "\n"
