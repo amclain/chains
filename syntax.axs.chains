@@ -99,21 +99,21 @@ startup =>
 mainline =>
 
 data => vdvTP
-    string ->
-	doStuff
+	string ->
+		doStuff
 	
-    online ->
+	online ->
 
 // How to handle multiple channels / dev-chans.
 // List kind of like an array?
 
 button => vdvTP, CHANNEL_NUMBER
-    push ->
-	doStuff
+	push ->
+		doStuff
 	
-    release ->
-	doStuff
-	
+	release ->
+		doStuff
+
 
 button =>
 	vdvTP, CHANNEL_NUMBER_1

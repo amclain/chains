@@ -58,44 +58,99 @@ grammar Chains
 	
 	rule event_definition
 		# TODO
-		user_symbol space? '=>'
+		user_symbol space? '=>' space?
+		(
+			indent
+			(user_symbol space? ',' space? user_symbol space?)+
+			event_handler+
+			outdent
+		)
 		<EventDefinition>
+	end
+	
+	rule event_handler
+		user_symbol space? '->' space?
+		(
+			indent
+			(
+				space?
+				valid_in_function
+				space?
+			)*
+			outdent
+		)?
+		<EventHandler>
 	end
 
 	rule function_definition
 		# TODO
-		(variable_type space)?
+		(variable_keyword space)?
 		user_symbol space?
 		(
-			'(' space? (variable_type space user_symbol ','? space?)* ')' space?
+			'(' space? (variable_keyword space user_symbol ','? space?)* ')' space?
 		)?
 		'->' space?
 		(
 			# Statement is directly after the function symbol.
 			# One line definition.
 			(
-				#statement
+				# TODO: replace
 				user_symbol
 			)
 			/
 			# Code indents to a nested set.
 			(
 				indent
-				(
-					# Things that can be done inside a function.
-					variable_definition / assignment
-					# conditional / loop
-				)
+				( space?
+					(
+						# Things that can be done inside a function.
+						valid_in_function
+					)
+				space? )*
 				outdent
-			)*
+			)
 		)?
 		<FunctionDefinition>
+	end
+	
+	rule valid_in_function
+		(conditional / variable_definition / assignment)
+	end
+	
+	rule conditional
+		if_statement <Conditional>
+	end
+	
+	rule if_statement
+		'if' space expression
+		(
+			indent
+			( space?
+				(
+					valid_in_function
+				)
+			space? )*
+			outdent
+		)
+		<IfStatement>
+	end
+	
+	rule expression
+		comparison
+		<Expression>
+	end
+	
+	rule comparison
+		(user_symbol / dps / float / string)
+		space? ('=' / '!') '=' space?
+		(user_symbol / dps / float / string)
+		<Comparison>
 	end
 
 	rule program_name
 		# Definition of the NetLinx program name.
 		# TODO
-		'PROGRAM_NAME' space? '=' space? string <ProgramName>
+		('PROGRAM_NAME' / 'program_name') space? '=' space? string <ProgramName>
 	end
 
 	rule include_directive
@@ -136,13 +191,13 @@ grammar Chains
 	rule structure_definition
 		user_symbol ':'
 		indent
-		(space? variable_type space user_symbol space?)*
+		(space? variable_keyword space user_symbol space?)*
 		outdent
 		<StructureDefinition>
 	end
 
 	rule variable_definition
-		variable_type space user_symbol
+		variable_keyword space user_symbol
 		(space? '=' space? (dps / float / integer / string))?
 		<VariableDefinition>
 	end
@@ -182,13 +237,13 @@ grammar Chains
 		space? '~@(OUTDENT)@~' space? <Outdent>
 	end
 
-	rule variable_type
+	rule variable_keyword
 		('ui' / 'si' / 'ul' / 'sl' / 'fl' / 'db' / 'ch' / 'wc' / 'st' /
 		'st[' [0-9]+ ']' / 'dv' / 'dc' /
 		'integer' / 'sinteger' / 'long' / 'slong' / 'float' / 'double' /
 		'char' / 'char[' [0-9]+ ']' / 'widechar' / 'widechar[' [0-9+] ']' /
 		'dev' / 'devchan')
-		<VariableType>
+		<VariableKeyword>
 		# TODO: User-defined types.
 	end
 

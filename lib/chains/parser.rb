@@ -98,7 +98,7 @@ module Chains
           # No change in indentation. Pass line through.
           out += line
           
-        else
+        elsif indentResult <= -1
           # Indentation shifted left one or more times.
           # Add one or more flags.
           
@@ -132,14 +132,14 @@ module Chains
         start.upto(stop).each do |i|
           msg += (i == fail) ? ' => ' : '    '
           # TODO: Delete indentation flags.
-          msg += "%03d: #{out.lines[i].chop.
-            gsub(@indentFlag, '').gsub(@outdentFlag, '')
-            }\n" % (i + 1)
+          msg += "%03d: #{out.lines[i].chop
+            #gsub(@indentFlag, '').gsub(@outdentFlag, '')
+            }\n" % (i + 1) if out.lines[i]
         end
         
         msg += "\n"
         
-        raise Exception, msg
+        raise ParserException, msg
       end
       
       #tree = Parser.clean_tree tree
@@ -494,4 +494,8 @@ module Chains
     end
     
   end
+  
+  class ParserException < Exception
+  end
+  
 end

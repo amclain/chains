@@ -16,9 +16,28 @@ module Chains
 
 	class EventDefinition < Treetop::Runtime::SyntaxNode
 	end
+	
+	class EventHandler < Treetop::Runtime::SyntaxNode
+  end
 
 	class FunctionDefinition < Treetop::Runtime::SyntaxNode
 	end
+	
+	module Conditional
+  	class Conditional < Treetop::Runtime::SyntaxNode
+    end
+  end
+  
+  class IfStatement < Treetop::Runtime::SyntaxNode
+  end
+  
+  module Expression
+    class Expression < Treetop::Runtime::SyntaxNode
+    end
+  end
+  
+  class Comparison < Treetop::Runtime::SyntaxNode
+  end
 
 	class ProgramName < Treetop::Runtime::SyntaxNode
 	end
@@ -71,8 +90,8 @@ module Chains
 	class Outdent < Treetop::Runtime::SyntaxNode
 	end
   
-  module VariableType
-    class VariableType < Treetop::Runtime::SyntaxNode
+  module VariableKeyword
+    class VariableKeyword < Treetop::Runtime::SyntaxNode
     end
   end
   

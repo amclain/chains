@@ -81,8 +81,11 @@ ui myVar2 =
 (^*********************************************************^)
 
 volumeUp (ui chan) ->
-    ui x = 5
-    
+	ui x = 5
+	if y == i
+		z = 2
+
+
 // Split parameters on open parenthesis.
 /*
 sinteger setVolume(
@@ -96,6 +99,17 @@ sinteger setVolume(
 (^                         EVENTS                          ^)
 (^*********************************************************^)
 
-startup =>
+//startup =>
 
-mainline =>
+//mainline =>
+
+button =>
+	vdvTP, CHANNEL_NUMBER_1
+	vdvTP, CHANNEL_NUMBER_2
+	
+	push ->
+		x = 5
+	
+	release ->
+		y = 10
+

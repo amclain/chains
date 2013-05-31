@@ -34,6 +34,6 @@ begin
   parser = Chains::Parser.new input
   doc = parser.document
   puts Chains::Parser.clean(doc) if doc
-rescue Exception => e
+rescue Chains::ParserException => e
   puts e.message
 end
