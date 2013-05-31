@@ -134,7 +134,11 @@ grammar Chains
 	end
 
 	rule structure_definition
-		user_symbol ':' <StructureDefinition>
+		user_symbol ':'
+		space? indent
+		(space? variable_type space user_symbol space?)*
+		space? outdent
+		<StructureDefinition>
 	end
 
 	rule variable_definition

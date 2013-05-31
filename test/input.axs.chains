@@ -72,23 +72,26 @@ dc  devchan
 */
 
 // Split after equals.
+/*
 ui myVar2 =
 	456
+*/
 
 (^*********************************************************^)
 (^                       FUNCTIONS                         ^)
 (^*********************************************************^)
 
 volumeUp (ui chan) ->
-    doStuff chan
+    ui x = 5
     
 // Split parameters on open parenthesis.
+/*
 sinteger setVolume(
 	ui channel
 	ui level
 ) ->
 	doStuff channel, level
-	
+*/
 
 (^*********************************************************^)
 (^                         EVENTS                          ^)
