@@ -79,7 +79,7 @@ ui myVar2 =
 (^                       FUNCTIONS                         ^)
 (^*********************************************************^)
 
-volumeUp chan ->
+volumeUp (ui chan) ->
     doStuff chan
     
 // Split parameters on open parenthesis.

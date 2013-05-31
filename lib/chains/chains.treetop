@@ -1,0 +1,187 @@
+grammar Chains
+	
+	rule document
+		# An entire Chains document.
+		(space? document_element (space? comment)? space?)* <Document>
+	end
+
+	rule document_element
+		(
+			block_comment / comment /
+			program_name /
+			include_directive /
+			event_definition / function_definition / 
+			device_definition / constant_definition /
+			structure_definition / variable_definition 
+		)
+	end
+
+	rule block_comment
+		(c_comment / header_comment / hidden_block_comment) <BlockComment>
+	end
+
+	rule comment
+		'//' (!"\n" .)* "\n"* <Comment>
+	end
+
+	rule header_comment
+		# A type of block comment.
+		'(!'
+		(
+			!'!)'
+			(. / "\n")
+		)*
+		'!)'
+	end
+	
+	rule c_comment
+		# A type of block comment.
+		'/*'
+		(
+			!'*/'
+			(. / "\n")
+		)*
+		'*/'
+	end
+	
+	rule hidden_block_comment
+		# A block comment that doesn't show up in the
+		# post-processed NetLinx document.
+		'(^'
+		(
+			!'^)'
+			(. / "\n")
+		)*
+		'^)'
+	end
+	
+	rule event_definition
+		# TODO
+		user_symbol space? '=>'
+		<EventDefinition>
+	end
+
+	rule function_definition
+		# TODO
+		(variable_type space)?
+		user_symbol space?
+		(
+			'(' space? (variable_type space user_symbol ','? space?)* ')' space?
+		)?
+		'->' space?
+		(
+			# Statement is directly after the function symbol.
+			# One line definition.
+			(
+				#statement
+				user_symbol
+			)
+			/
+			# Code indents to a nested set.
+			(
+				space? indent space?
+				(
+					# Things that can be done inside a function.
+					variable_definition / assignment
+					# conditional / loop
+				)
+				space? outdent space?
+			)*
+		)?
+		<FunctionDefinition>
+	end
+
+	rule program_name
+		# Definition of the NetLinx program name.
+		# TODO
+		'PROGRAM_NAME' space? '=' space? string <ProgramName>
+	end
+
+	rule include_directive
+		'#include' space string <IncludeDirective>
+	end
+
+	rule device_definition
+		user_symbol space? '=' space? dps (space string)? <DeviceDefinition>
+	end
+
+	rule dps
+		# A NetLinx device, port, system address: 10001:1:0
+		dps_segment ':' dps_segment ':' dps_segment <DPS>
+	end
+
+	rule dps_segment
+		# The numeric part of a NetLinx DPS.
+		[0-9] 1..5 <DPSSegment>
+	end
+
+	rule constant_definition
+		constant space? '=' space? (float / integer / string)
+		<ConstantDefinition>
+	end
+
+	rule constant
+		[A-Z_] [A-Z0-9_]+ <Constant>
+	end
+
+	rule structure_definition
+		user_symbol ':' <StructureDefinition>
+	end
+
+	rule variable_definition
+		variable_type space user_symbol
+		(space? '=' space? (dps / float / integer / string))?
+		<VariableDefinition>
+	end
+	
+	rule assignment
+		user_symbol space? '=' space? (dps / float / integer / string) <Assignment>
+	end
+
+	rule user_symbol
+		# Named symbols the user can create,
+		# like varialbe and function names.
+		[a-zA-Z_] [a-zA-Z0-9_]* <UserSymbol>
+	end
+
+	rule string
+		'"' ([^"\\] / "\\" . )* '"'
+		/
+		"'" ([^'\\] / "\\" . )* "'"
+		<StringLiteral>
+	end
+
+	rule integer
+		('+' / '-')? [0-9]+ <IntegerLiteral>
+	end
+
+	rule float
+		('+' / '-')? [0-9]+ (('.' [0-9]+) / ('e' [0-9]+)) <FloatLiteral>
+	end
+
+	rule indent
+		# Indent symbol defined by the preformatter.
+		'~@(INDENT)@~' <Indent>
+	end
+
+	rule outdent
+		# Outdent symbol defined by the preformatter.
+		'~@(OUTDENT)@~' <Outdent>
+	end
+
+	rule variable_type
+		('ui' / 'si' / 'ul' / 'sl' / 'fl' / 'db' / 'ch' / 'wc' / 'st' /
+		'st[' [0-9]+ ']' / 'dv' / 'dc' /
+		'integer' / 'sinteger' / 'long' / 'slong' / 'float' / 'double' /
+		'char' / 'char[' [0-9]+ ']' / 'widechar' / 'widechar[' [0-9+] ']' /
+		'dev' / 'devchan')
+		<VariableType>
+		# TODO: User-defined types.
+	end
+
+	rule space
+		[\s]+
+	end
+
+end
+

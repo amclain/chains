@@ -3,10 +3,11 @@ $lib = "#{$root}/lib"
 
 require 'pry'
 
-require "#{$lib}/chains/document"
-require "#{$lib}/chains/element"
+require "#{$lib}/chains/parser"
+#require "#{$lib}/chains/document" 
+#require "#{$lib}/chains/element"
 
-require "#{$lib}/chains/comment"
+#require "#{$lib}/chains/comment"
 
 
 # doc = Chains::Document.new
@@ -33,4 +34,4 @@ parser = Chains::Parser.new input
 
 doc = parser.document
 
-puts doc if doc
+puts Chains::Parser.clean(doc) if doc

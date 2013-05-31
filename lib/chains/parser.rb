@@ -1,13 +1,7 @@
 # Parse a Chains file to a Chains DOM
 
-
-require "#{$lib}/chains/document"
-require "#{$lib}/chains/rules/standard_rules"
-require "#{$lib}/chains/rules/inline_comment_rule"
-
-require "#{$lib}/chains/comment"
-require "#{$lib}/chains/conditional"
-require "#{$lib}/chains/verbatim"
+require 'treetop'
+require "#{$lib}/chains/chains_extensions"
 
 module Chains
   class Parser
@@ -15,17 +9,14 @@ module Chains
     attr_reader :line_number
     
     def initialize(input = nil)
-      @document = Chains::Document.new
-      
-      @inlineCommentRule = Chains::InlineCommentRule.new
-      @rules = Chains::StandardRules.new
+      @document = nil
       
       @commentOpeningSymbols = ['(*', '(^', '(!', '/*', '/^', '/!']
       @commentClosingSymbols = ['*)', '^)', '!)', '*/', '^/', '!/']
       
-       # For parser.
-      @parent = Array.new
-      @sibling = @document
+      # For parser.
+      @indentFlag   = '~@(INDENT)@~'
+      @outdentFlag  = '~@(OUTDENT)@~'
       @indent = Array.new
       @line_number = 0
       
@@ -34,16 +25,13 @@ module Chains
     end
     
     def parse(input)
-      @document = Chains::Document.new
-      
       # Input =
       #   Input string, file path, file object.
       
       # TODO: For now we don't care. Assume input string for testing.
       
-      
-      @parent = Array.new    # Push and pop this to track nested statement relationships.
-      @parent << @document
+      treetop = Treetop.load(File.join($lib, 'chains', 'chains.treetop'))
+      ttparser = ChainsParser.new
       
       @indent = Array.new    # Push and pop as indentation changes.
       @indent << 0
@@ -52,13 +40,10 @@ module Chains
 
       rollover = ParserRollover.new
       
-      stack = Array.new     # Push and pop elements being created.
-      
       inBlockComment = false
-      commentBuf = ''
       commentClosingSymbol = nil # If in a comment, tracks the closing symbol to watch for.
       
-      
+      out = ''
       
       input.each_line do |line|
         @line_number += 1
@@ -71,9 +56,6 @@ module Chains
         indentResult = update_indent line unless inBlockComment || rollover.capturing?
         
         
-        # TODO: Handle indent result here?
-        
-        
         # Check for multiline comment.
         # Ends with '*/' or '*)'. Possibly on another line.
         @commentOpeningSymbols.each do |symbol|
@@ -84,120 +66,82 @@ module Chains
           end
         end
         
-        commentBuf += line.delete("\r").delete("\n") + "\n"
+        out += line
         
         if inBlockComment
           # Look for closing tag.
           inBlockComment = false if line.strip.end_with? commentClosingSymbol
           
           unless inBlockComment
-            e = Chains::Comment.new commentBuf
-            e.parent = @parent.last
-            @parent.last << e
-            commentBuf = ''
             closingSymbol = nil
           end 
           
           next # Skip to next line.
         end
-        
-        
-        # Check if the line ends with a comment.
-        inlineResult = @inlineCommentRule.parse(line)
-        
-        if inlineResult.is_a? Chains::Comment
-          inlineResult.parent = @parent.last
-          @parent << inlineResult
-          next
-        elsif inlineResult.is_a? Chains::Verbatim
-          line = inlineResult.text
-        end
-        
+
         
         # Check for line rollover.
-        rollover << line
-        rollover.starting_line_number = @line_number
+        # rollover << line
+        # rollover.starting_line_number = @line_number
         
-        if rollover.end_capture?
-          line = rollover.to_s
-          rollover.clear
-        end
-        
-        
-        #-------------------------------------------------------
-        # TODO: Subclass rules so they have access to the parser
-        #       instance variables, like document and symbols.
-        #-------------------------------------------------------
+        # if rollover.end_capture?
+          # line = rollover.to_s
+          # rollover.clear
+        # end
         
         
-        # Run line through rules.
-        matchedRule = false
-        @rules.each do |rule|
-          result = rule.parse(line.strip)
-          next unless result
-          
-          matchedRule = true
-          stack << result
-          break
-        end
-        
-        unless matchedRule
-          # TODO: Raise exception.
-          #binding.pry
-          puts "SYNTAX ERROR line #{@line_number}:\n#{line}"
-          @document = nil
-          return
-        end
-        
-        
-        
-        binding.pry if @parent.last.class == Assignment
-        
-        
-        
-        # TODO: Shuffle parents based on indentation here.
+        # Add indent and outdent flags to assist the PEG parser.
         if indentResult == 1
-          # Don't need to pop; line was indented.
+          # Line was indented. Add flag.
+          out += "#{@indentFlag}#{line}"
           
         elsif indentResult == 0
-          # Pop one element off if it's not a sibling.
-          if @parent.last.class == Chains::Conditional &&
-            @parent.last.type.to_s == 'if' &&
-            stack.last.class == Chains::Conditional &&
-            (
-              stack.last.type.to_s == 'else if' ||
-              stack.last.type.to_s == 'else'
-            )
-          else
-            @parent.pop unless @parent.last == @document
-          end
+          # No change in indentation. Pass line through.
+          out += line
           
         else
-          # Pop n elements off based on outdent.
-          # Watch for siblings.
-          
+          # Indentation shifted left one or more times.
+          # Add one or more flags.
+          out += "#{line}"
+          1.upto(indentResult.abs) {out += @outdentFlag}
         end
         
-        
-        
-        # Grab the parsed element to work with.
-        e = stack.pop
-        
-        # Check if next elemet on the stack is a comment that attaches to e.
-        e.comment = inlineResult.comment if inlineResult.is_a? Chains::Verbatim
-        
-        e.parent = @parent.last
-        @parent.last << e  # Make the element a child of the last parent.
-        @parent << e       # Push this element onto the parent stack.
-        
-        
-        
+      end # End .each_line
+      
+      
+      tree = ttparser.parse(out)
+      #binding.pry
+      
+      # Error handling.
+      if tree.nil?
+        #raise Exception, "Parse error at offset: #{@@parser.index}"
+        raise Exception,
+          "Parse error at\nline: #{ttparser.failure_line}\n" +
+          "Column: #{ttparser.failure_column}"
       end
       
-      @document
-    end
+      #tree = Parser.clean_tree tree
+      
+      @document = tree
+      tree
+    end # End of parser.
+    
     
     private
+    def self.clean_tree(root_node)
+      return if root_node.elements.nil?
+      root_node.elements.delete_if {|node| node.class.name == 'Treetop::Runtime::SyntaxNode'}
+      root_node.elements.each {|node| self.clean_tree node}
+    end
+    
+    def self.clean(tree)
+      s = tree.inspect
+      out = ''
+      s.each_line {|line| out += line unless line.strip.start_with? 'SyntaxNode'}
+      out
+    end
+    
+    
     def indent_count(line)
       indent = 0
       

@@ -1,35 +1,30 @@
-/****************************************************
-   Tests that the parser nests elements correctly.
-*****************************************************/
+(!**********************************************************
+    Example of how the Chains syntax should look.
+    
+    File extension = .axs.chains
+***********************************************************!)
 
-myFunction ->
-  
-  ui items[5]
-  
-  for i in items
-  
-    if i > 0
+PROGRAM_NAME = 'NetLinx Preparser'
+(^*********************************************************^)
+(^                        DEVICES                          ^)
+(^*********************************************************^)
+
+// Single device.
+dvTP        = 33000:1:0   'touchpanel-file[.tp4]'
+
+
+// Device combine.
+vdvTP       = 34000:1:0   'file-for-all-panels[.tp4]'
+dvTP1   = 10001:1:0
+dvTP2   = 10002:1:0
     
-      doStuff i
-      
-      if i == 2
-      
-        updateTouchPanel
-        
-    else if i == 4
     
-      if x == 0
-      
-        selfDestruct
-        
-      else
-      
-        doOtherStuff i
-        
-    else
-    
-      doNothing
-      
-  x = i
-    
-func2 ->
+// Optional device file paths can instruct a tool on how
+// to transfer the file without needing a workspace definition.
+
+(^*********************************************************^)
+(^                       CONSTANTS                         ^)
+(^*********************************************************^)
+
+MY_CONSTANT_INTEGER	    = 1
+MY_CONSTANT_STRING	    = 'a string'
