@@ -28,6 +28,9 @@ module Chains
 
 	class DeviceDefinition < Treetop::Runtime::SyntaxNode
 	end
+	
+	class DeviceCombine < Treetop::Runtime::SyntaxNode
+  end
 
 	class DPS < Treetop::Runtime::SyntaxNode
 	end

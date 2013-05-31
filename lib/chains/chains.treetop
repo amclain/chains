@@ -104,6 +104,10 @@ grammar Chains
 	rule device_definition
 		user_symbol space? '=' space? dps (space string)? <DeviceDefinition>
 	end
+	
+	rule device_combine
+		indent space? device_definition space? outdent <DeviceCombine>
+	end
 
 	rule dps
 		# A NetLinx device, port, system address: 10001:1:0

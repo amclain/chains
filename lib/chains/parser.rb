@@ -49,7 +49,7 @@ module Chains
         @line_number += 1
         
         # Skip empty lines.
-        next if line.strip.empty? && !inBlockComment
+        #next if line.strip.empty? && !inBlockComment
         
         
         # Check indentation and pop parents accordingly.
@@ -66,11 +66,10 @@ module Chains
           end
         end
         
-        out += line
-        
         if inBlockComment
           # Look for closing tag.
           inBlockComment = false if line.strip.end_with? commentClosingSymbol
+          out += line
           
           unless inBlockComment
             closingSymbol = nil
@@ -115,9 +114,25 @@ module Chains
       # Error handling.
       if tree.nil?
         #raise Exception, "Parse error at offset: #{@@parser.index}"
-        raise Exception,
-          "Parse error at\nline: #{ttparser.failure_line}\n" +
-          "Column: #{ttparser.failure_column}"
+        
+        msg = "Parse error at\n\nLine: #{ttparser.failure_line}\n" +
+          "Column: #{ttparser.failure_column}\n\n" +
+          "OUTPUT:\n\n"
+        
+        fail = ttparser.failure_line
+        start = fail - 5
+        stop = fail + 5
+        
+        start.upto(stop).each do |i|
+          msg += (i == fail) ? ' => ' : '    '
+          # TODO: Delete indentation flags.
+          msg += "%03d: #{out.lines[i].chop.
+            gsub(@indentFlag, '').gsub(@outdentFlag, '')}\n" % (i + 1)
+        end
+        
+        msg += "\n"
+        
+        raise Exception, msg
       end
       
       #tree = Parser.clean_tree tree

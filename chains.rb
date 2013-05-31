@@ -30,8 +30,10 @@ require "#{$lib}/chains/parser"
 
 input = File.open("#{$root}/test/input.axs.chains", 'r').read
 
-parser = Chains::Parser.new input
-
-doc = parser.document
-
-puts Chains::Parser.clean(doc) if doc
+begin
+  parser = Chains::Parser.new input
+  doc = parser.document
+  puts Chains::Parser.clean(doc) if doc
+rescue Exception => e
+  puts e.message
+end
