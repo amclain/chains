@@ -97,5 +97,10 @@ module Chains
     end
   end
   
+  module Value
+    class Value < Treetop::Runtime::SyntaxNode
+    end
+  end
+  
 end
 

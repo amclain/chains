@@ -34,6 +34,10 @@ module Chains
       
       netlinxDoc = NetLinx::Document.new
       
+      #-----------------------------------------------------------
+      # TODO: Walk the tree from the inside (chains_extensions.rb)
+      #       using helper methods.
+      #-----------------------------------------------------------
       convert_element chainsDoc, netlinxDoc
       
       @netlinx_document = netlinxDoc
@@ -42,19 +46,14 @@ module Chains
     
     private
     def find(element, elementClass)
-      return nil if element.elements.nil?
-      
-      result = nil
-      element.elements.each do |e|
-        return e if e.is_a? elementClass
-      end
+      array = Array.new
+      return array if element.elements.nil?
       
       element.elements.each do |e|
-        result = find e, elementClass
-        return result unless result.nil?
+        array << e if e.is_a? elementClass
       end
       
-      return result
+      return array
     end
     
     def convert_element(e, netlinxDoc)
@@ -67,43 +66,57 @@ module Chains
       end
       
       case
-      # when e.is_a?(BlockComment)
-        # transform_block_comment e
-      # when e.is_a?(Comment)
-        # transform_comment e
-      # when e.is_a?(EventDefinition)
-        # t = transform_event_definition e
-        # netlinxDoc[:events] << t
-      # when e.is_a?(EventHandler)
-        # transform_event_handler e
-      # when e.is_a?(FunctionDefinition)
-        # t = transform_function_definition e
-        # netlinxDoc[:functions] << t
-      # when e.is_a?(Conditional)
-        # transform_conditional e
+      when e.is_a?(BlockComment)
+        transform_block_comment e
+        
+      when e.is_a?(Comment)
+        transform_comment e
+        
+      when e.is_a?(EventDefinition)
+        t = transform_event_definition e
+        netlinxDoc[:events] << t
+        
+      when e.is_a?(EventHandler)
+        transform_event_handler e
+        
+      when e.is_a?(FunctionDefinition)
+        t = transform_function_definition e
+        netlinxDoc[:functions] << t
+        
+      when e.is_a?(Conditional)
+        transform_conditional e
+        
       when e.is_a?(ProgramName)
+        return nil unless e.parent.is_a? DocumentElement
         t = transform_program_name e
         netlinxDoc.programName = t
-      # when e.is_a?(IncludeDirective)
-        # t = transform_include_directive e
-        # netlinxDoc[:includes] << t
-      # when e.is_a?(DeviceDefinition)
-        # t = transform_device_definition e
-        # netlinxDoc[:devices] << t
-      # when e.is_a?(DeviceCombine)
-        # transform_device_combine e
-      # when e.is_a?(ConstantDefinition)
-        # t = transform_constant_definition e
-        # netlinxDoc[:constants] << t
+        
+      when e.is_a?(IncludeDirective)
+        t = transform_include_directive e
+        netlinxDoc[:includes] << t
+        
+      when e.is_a?(DeviceDefinition)
+        t = transform_device_definition e
+        netlinxDoc[:devices] << t
+        
+      when e.is_a?(DeviceCombine)
+        transform_device_combine e
+        
+      when e.is_a?(ConstantDefinition)
+        t = transform_constant_definition e
+        netlinxDoc[:constants] << t
+        
       # when e.is_a?(StructureDefinition)
         # t = transform_structure_definition e
         # netlinxDoc[:structures] << t
-      # when e.is_a?(VariableDefinition)
-        # t = transform_variable_definition e
-        # netlinxDoc[:variables] << t
-      end
+#         
+      when e.is_a?(VariableDefinition)
+        t = transform_variable_definition e
+        netlinxDoc[:variables] << t
+        
+      end # End case
       
-    end
+    end # End convert_element
     
     
     def transform_block_comment(e)
@@ -131,12 +144,14 @@ module Chains
     end
     
     def transform_program_name(e)
-      nameElement = find e, StringLiteral
+      nameElement = find(e, StringLiteral).first
       (nameElement.nil?) ? '' : nameElement.text_value[1..-2]
     end
     
     def transform_include_directive(e)
-      
+      includeElement = nil
+      includeName = find(e, StringLiteral).first
+      (includeName.nil?) ? nil : NetLinx::Directive.new(:include, includeName.text_value[1..-2])
     end
     
     def transform_device_definition(e)
@@ -152,7 +167,24 @@ module Chains
     end
     
     def transform_structure_definition(e)
+      nameElement = find(e, UserSymbol).first
       
+      # TODO: Finish this.
+      block = NetLinx::Block.new nameElement.text_value + ":"
+      
+      binding.pry
+      
+      block
+    end
+    
+    def transform_variable_definition(e)
+      typeElement = find(e, VariableKeyword).first
+      nameElement = find(e, UserSymbol).first
+      
+      v = find(e, VariableDefinition0).first
+      valueElement = find(v, Value).first if v
+      
+      result = NetLinx::Assignment.new nameElement.text_value, valueElement.text_value, typeElement.text_value
     end
     
     def transform_assignment(e)
