@@ -142,7 +142,7 @@ module Chains
         raise ParserException, msg
       end
       
-      #tree = Parser.clean_tree tree
+      tree = Parser.clean_tree tree
       
       @document = tree
       tree
@@ -152,8 +152,11 @@ module Chains
     private
     def self.clean_tree(root_node)
       return if root_node.elements.nil?
-      root_node.elements.delete_if {|node| node.class.name == 'Treetop::Runtime::SyntaxNode'}
-      root_node.elements.each {|node| self.clean_tree node}
+      root_node.elements.reverse_each {|e| self.clean_tree e}
+      root_node.elements.delete_if do |e|
+        e.class.name == 'Treetop::Runtime::SyntaxNode' &&
+        (e.elements.nil? || e.elements.count == 0)
+      end
     end
     
     def self.clean(tree)

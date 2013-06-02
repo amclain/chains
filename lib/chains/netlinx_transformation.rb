@@ -42,8 +42,11 @@ module Chains
     
     private
     def convert_element(e, netlinxDoc)
+      #binding.pry
       
-      e.elements.each do |element|
+      # TODO: Stack level too deep.
+      
+      e.each do |element|
         convert_element e, netlinxDoc
       end
       
@@ -83,6 +86,7 @@ module Chains
         t = transform_variable_definition e
         netlinxDoc[:variables] << t
       end
+      
     end
     
     

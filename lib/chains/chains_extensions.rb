@@ -3,7 +3,9 @@ module Chains
 	class Document < Treetop::Runtime::SyntaxNode
 	end
 
-	class DocumentElement < Treetop::Runtime::SyntaxNode
+  module DocumentElement
+  	class DocumentElement < Treetop::Runtime::SyntaxNode
+  	end
 	end
 
   module BlockComment
