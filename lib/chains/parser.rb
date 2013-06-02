@@ -142,7 +142,7 @@ module Chains
         raise ParserException, msg
       end
       
-      tree = Parser.clean_tree tree
+      #tree = Parser.clean_tree tree
       
       @document = tree
       tree
